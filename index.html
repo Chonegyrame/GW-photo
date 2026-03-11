@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GW Photo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --white: #f0ece4;
       --gold: #c9a96e;
-      --dark: #0a0a0a;
+      --dark: #121212;
     }
 
     html, body {
@@ -22,7 +22,7 @@
       overflow-x: hidden;
     }
 
-    /* ── HERO ── */
+    /* â”€â”€ HERO â”€â”€ */
     .hero {
       position: relative;
       width: 100vw;
@@ -46,9 +46,9 @@
     .slide.active { opacity: 1; }
 
     /* Replace these URLs with your own bird photos */
-    .slide-1 { background-image: url('https://i.ibb.co/sv9n44qP/DSC-8511-Dx-O-1.jpg'); background-position: center; }
-    .slide-2 { background-image: url('https://i.ibb.co/7NrFHprG/DSC-5901-Dx-O-Dx-O.jpg'); background-position: center 60%; }
-    .slide-3 { background-image: url('https://i.ibb.co/bMztbJ3F/DSC-6086-Dx-O-Dx-O.jpg'); background-position: center 60%; }
+    .slide-1 { background-image: url('https://i.ibb.co/mVTwpKjS/DSC-8511-Dx-O-1-Dx-O-1.jpg'); background-position: center; }
+    .slide-2 { background-image: url('https://i.ibb.co/VpmPy3vr/DSC-5901-Dx-O-Dx-O-Dx-O.jpg'); background-position: center 60%; }
+    .slide-3 { background-image: url('https://i.ibb.co/rjz10sh/DSC-6086-Dx-O-Dx-O-Dx-O.jpg'); background-position: center 60%; }
 
     /* Dark overlay */
     .hero::after {
@@ -75,7 +75,7 @@
       pointer-events: none;
     }
 
-    /* ── NAV ── */
+    /* â”€â”€ NAV â”€â”€ */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -111,7 +111,7 @@
       transform: translateX(-50%);
     }
     .nav-logo .name {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Bodoni Moda', serif;
       font-weight: 300;
       font-size: 22px;
       letter-spacing: 0.18em;
@@ -129,7 +129,7 @@
       margin-top: 4px;
     }
 
-    /* ── HERO TEXT ── */
+    /* â”€â”€ HERO TEXT â”€â”€ */
     .hero-content {
       position: absolute;
       bottom: 80px;
@@ -147,12 +147,13 @@
       margin-bottom: 14px;
     }
     .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(48px, 7vw, 96px);
-      font-weight: 300;
-      line-height: 1.0;
-      color: var(--white);
-      font-style: italic;
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(18px, 2.8vw, 36px);
+      font-weight: 200;
+      line-height: 1.15;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
     }
 
     /* Slide counter */
@@ -201,10 +202,18 @@
     .arrow-left { left: 20px; }
     .arrow-right { right: 20px; }
 
-    /* ── PORTFOLIO SECTION ── */
+    /* â”€â”€ PORTFOLIO SECTION â”€â”€ */
     .portfolio {
       padding: 120px 56px;
-      background: #0d0d0d;
+      background: #161616;
+      scroll-margin-top: 110px;
+    }
+    /* legacy hide class */
+    .portfolio.portfolio-hidden {
+      display: none;
+    }
+    .portfolio[hidden] {
+      display: none !important;
     }
     .section-header {
       display: flex;
@@ -228,38 +237,116 @@
       color: var(--white);
     }
 
-    /* Masonry-style grid */
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: repeat(3, 260px);
-      gap: 4px;
+    .portfolio-jump {
+      padding: 72px 0 0;
+      background: #161616;
+      scroll-margin-top: 110px;
     }
-    .photo-item {
-      overflow: hidden;
+    .portfolio-jump-link {
+      width: 100%;
+      max-width: none;
+      height: auto;
+      aspect-ratio: 1920 / 700;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
       position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.46)),
+        url('https://i.ibb.co/CspRLpfX/DSC-5279-Dx-O-1.jpg');
+      background-size: cover;
+      background-position: center 59%;
       cursor: pointer;
     }
-    .photo-item:nth-child(1) { grid-column: 1 / 6; grid-row: 1 / 3; }
-    .photo-item:nth-child(2) { grid-column: 6 / 9; grid-row: 1 / 2; }
-    .photo-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 2; }
-    .photo-item:nth-child(4) { grid-column: 6 / 10; grid-row: 2 / 3; }
-    .photo-item:nth-child(5) { grid-column: 10 / 13; grid-row: 2 / 3; }
-    .photo-item:nth-child(6) { grid-column: 1 / 5; grid-row: 3 / 4; }
-    .photo-item:nth-child(7) { grid-column: 5 / 9; grid-row: 3 / 4; }
-    .photo-item:nth-child(8) { grid-column: 9 / 13; grid-row: 3 / 4; }
+    .portfolio-jump-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.26) 100%);
+      pointer-events: none;
+    }
+    .portfolio-jump-link::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .portfolio-jump-title {
+      position: relative;
+      z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(34px, 4.5vw, 64px);
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--gold);
+    }
+    /* Editorial 3-column portfolio (manual art-directed rows) */
+    .portfolio-gallery {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .portfolio-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .portfolio-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .portfolio-row.row-feature {
+      grid-template-columns: 1.15fr 0.95fr 1fr;
+    }
+    .portfolio-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .portfolio-card {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .portfolio-card.size-hero { height: 760px; }
+    .portfolio-card.size-hero-compact { height: 540px; }
+    .portfolio-card.size-tall { height: 560px; }
+    .portfolio-card.size-large { height: 480px; }
+    .portfolio-card.size-medium { height: 300px; }
+    .portfolio-card.size-small { height: 210px; }
+    .portfolio-card.size-solo { height: 620px; }
 
-    .photo-item img {
-      width: 100%; height: 100%;
+    .portfolio-card img {
+      width: 100%;
+      height: 100%;
+      display: block;
       object-fit: cover;
+      object-position: center center;
       filter: brightness(0.88) saturate(0.9);
       transition: transform 0.7s ease, filter 0.5s ease;
-      display: block;
     }
-    .photo-item:hover img {
-      transform: scale(1.05);
+    .portfolio-card.focus-center img { object-position: center center; }
+    .portfolio-card.focus-top img { object-position: center 22%; }
+    .portfolio-card.focus-left img { object-position: 40% 50%; }
+    .portfolio-card.focus-right img { object-position: 42% 50%; }
+    .portfolio-card.focus-stjartmes img { object-position: 58% 48%; }
+    .portfolio-card.focus-koltrast img { object-position: 44% 50%; }
+    .portfolio-card.fit-contain img { object-fit: contain; }
+    .portfolio-card:hover img {
+      transform: scale(1.02);
       filter: brightness(1) saturate(1.05);
     }
+
     .photo-overlay {
       position: absolute;
       inset: 0;
@@ -269,7 +356,7 @@
       align-items: flex-end;
       padding: 20px;
     }
-    .photo-item:hover .photo-overlay { background: rgba(0,0,0,0.25); }
+    .portfolio-card:hover .photo-overlay { background: rgba(0,0,0,0.2); }
     .photo-species {
       font-family: 'Cormorant Garamond', serif;
       font-size: 15px;
@@ -280,12 +367,14 @@
       transform: translateY(8px);
       transition: all 0.4s ease;
     }
-    .photo-item:hover .photo-species {
+    .portfolio-card:hover .photo-species {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* ── ABOUT STRIP ── */
+    .portfolio-row-single {
+      grid-template-columns: 1fr;
+    }
     .about-strip {
       padding: 100px 56px;
       display: grid;
@@ -335,12 +424,11 @@
       font-size: 9px;
       font-weight: 300;
       letter-spacing: 0.3em;
-      text-transform: uppercase;
       color: var(--gold);
       margin-top: 6px;
     }
 
-    /* ── FOOTER ── */
+    /* â”€â”€ FOOTER â”€â”€ */
     footer {
       padding: 48px 56px;
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -358,11 +446,11 @@
     .footer-copy {
       font-size: 10px;
       font-weight: 200;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       color: rgba(240,236,228,0.25);
     }
 
-    /* ── LIGHTBOX ── */
+    /* â”€â”€ LIGHTBOX â”€â”€ */
     .lightbox {
       position: fixed;
       inset: 0;
@@ -372,11 +460,25 @@
       align-items: center;
       justify-content: center;
     }
-    .lightbox.open { display: flex; }
+    .lightbox.open { display: flex; overflow: hidden; }
+    .lightbox.open.zoomed { display: flex; overflow-y: auto; overflow-x: hidden; align-items: flex-start; justify-content: center; }
+    .lightbox.open.zoomed .lightbox-close { position: fixed; }
     .lightbox img {
       max-width: 90vw;
       max-height: 90vh;
-      object-fit: contain;
+      object-fit: cover;
+      cursor: zoom-in;
+      transition: transform 0.25s ease;
+    }
+    .lightbox img.zoomed {
+      max-width: 90vw;
+      width: auto;
+      max-height: none;
+      height: 170vh;
+      margin: 6vh auto;
+      display: block;
+      cursor: zoom-out;
+      transform: none;
     }
     .lightbox-close {
       position: absolute;
@@ -391,7 +493,7 @@
     }
     .lightbox-close:hover { opacity: 1; }
 
-    /* ── ANIMATIONS ── */
+    /* â”€â”€ ANIMATIONS â”€â”€ */
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -404,20 +506,24 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
+    /* — — RESPONSIVE — — */
+    @media (max-width: 1024px) {
+      .portfolio-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .portfolio-row-single {
+        grid-template-columns: 1fr;
+      }
+    }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       nav { padding: 24px 24px; }
       .nav-links { display: none; }
-      .hero-content { left: 24px; bottom: 60px; }
-      .portfolio { padding: 80px 24px; }
-      .about-strip { padding: 80px 24px; grid-template-columns: 1fr; gap: 48px; }
-      footer { padding: 36px 24px; flex-direction: column; gap: 12px; text-align: center; }
-      .photo-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: repeat(4, 200px);
+      .portfolio-jump { padding: 40px 0 0; }
+      .portfolio { padding: 88px 24px; }
+      .portfolio-row {
+        grid-template-columns: 1fr;
       }
-      .photo-item:nth-child(n) { grid-column: auto; grid-row: auto; }
     }
   </style>
 </head>
@@ -431,7 +537,7 @@
     </ul>
     <div class="nav-logo">
       <span class="name">GW Photo</span>
-      <span class="tagline">Bird Photography</span>
+      <span class="tagline">Wildlife &middot; Birds</span>
     </div>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
@@ -448,8 +554,7 @@
     </div>
 
     <div class="hero-content">
-      <div class="hero-eyebrow">Wildlife · Nature · Birds</div>
-      <h1 class="hero-title">Through the<br>Lens of Nature</h1>
+      <h1 class="hero-title">Swedish Wildlife<br>Through the Lens</h1>
     </div>
 
     <div class="slide-counter">
@@ -457,51 +562,23 @@
       <div class="counter-line"></div>
     </div>
 
-    <button class="arrow arrow-left" onclick="changeSlide(-1)">←</button>
-    <button class="arrow arrow-right" onclick="changeSlide(1)">→</button>
+    <button class="arrow arrow-left" onclick="changeSlide(-1)">&larr;</button>
+    <button class="arrow arrow-right" onclick="changeSlide(1)">&rarr;</button>
   </section>
 
+
+  <!-- PORTFOLIO JUMP -->
+  <section class="portfolio-jump" id="portfolio">
+    <a class="portfolio-jump-link" id="portfolioJumpLink" href="#portfolio-gallery" aria-label="Go to portfolio images">
+      <span class="portfolio-jump-title">Portfolio</span>
+    </a>
+  </section>
   <!-- PORTFOLIO -->
-  <section class="portfolio" id="portfolio">
-    <div class="section-header">
-      <span class="section-label">Portfolio</span>
-      <h2 class="section-title">Selected Work</h2>
-    </div>
+  <section class="portfolio" id="portfolio-gallery" hidden>
 
     <!-- Replace src URLs with your own bird photos -->
-    <div class="photo-grid">
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?w=900&q=80" alt="Bird in flight">
-        <div class="photo-overlay"><span class="photo-species">In Flight</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80" alt="Perched bird">
-        <div class="photo-overlay"><span class="photo-species">At Rest</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600&q=80" alt="Bird portrait">
-        <div class="photo-overlay"><span class="photo-species">Portrait</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=700&q=80" alt="Bird in nature">
-        <div class="photo-overlay"><span class="photo-species">In Nature</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1495034053951-f6cd73ad6b8b?w=600&q=80" alt="Wetlands bird">
-        <div class="photo-overlay"><span class="photo-species">Wetlands</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=700&q=80" alt="Forest bird">
-        <div class="photo-overlay"><span class="photo-species">Forest</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1591608516485-a1a53df39498?w=700&q=80" alt="Bird close-up">
-        <div class="photo-overlay"><span class="photo-species">Close-Up</span></div>
-      </div>
-      <div class="photo-item" onclick="openLightbox(this)">
-        <img src="https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=600&q=80" alt="Bird at dawn">
-        <div class="photo-overlay"><span class="photo-species">Golden Hour</span></div>
-      </div>
+    <div class="portfolio-gallery">
+      <div class="portfolio-rows" id="portfolioRows"></div>
     </div>
   </section>
 
@@ -510,11 +587,11 @@
     <div class="about-text">
       <div class="eyebrow">About</div>
       <h2>Capturing Birds<br>in Their World</h2>
-      <p>A passion for bird photography — finding stillness in the wild and bringing it home through the lens. Every shot is a moment of patience rewarded, a connection between observer and the observed.</p>
+      <p>A passion for bird photography â€” finding stillness in the wild and bringing it home through the lens. Every shot is a moment of patience rewarded, a connection between observer and the observed.</p>
     </div>
     <div class="about-stats">
       <div>
-        <div class="stat-num">∞</div>
+        <div class="stat-num">âˆž</div>
         <div class="stat-label">Hours in the Field</div>
       </div>
       <div>
@@ -535,13 +612,13 @@
   <!-- FOOTER -->
   <footer>
     <span class="footer-name">GW Photo</span>
-    <span class="footer-copy">© 2026 · All rights reserved</span>
+    <span class="footer-copy">Â© 2026 Â· All rights reserved</span>
   </footer>
 
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">×</button>
-    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">&times;</button>
+    <img id="lightboxImg" src="" alt="" onclick="toggleZoom(event)">
   </div>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -561,18 +638,296 @@
     // Auto-advance every 6s
     setInterval(() => changeSlide(1), 6000);
 
+    // Reveal portfolio gallery only after clicking portfolio hero card
+    const portfolioJumpLink = document.getElementById('portfolioJumpLink');
+    const portfolioSection = document.getElementById('portfolio-gallery');
+
+    function openPortfolioFromHero(event) {
+      event.preventDefault();
+      if (!portfolioSection) return;
+      portfolioSection.hidden = false;
+      portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    if (portfolioJumpLink) {
+      portfolioJumpLink.addEventListener('click', openPortfolioFromHero);
+    }
+    // Portfolio image map
+    const portfolioImages = {
+      stjartmesInsekt: { src: 'https://i.ibb.co/Kcd1DmHR/DSC-8402-Dx-O.jpg', alt: 'Stjartmes insekt' },
+      ekorre: { src: 'https://i.ibb.co/wNjgdkDY/DSC-8329-Dx-O-1-Dx-O.jpg', alt: 'Ekorre' },
+      skaggmes: { src: 'https://i.ibb.co/39p8f3tQ/DSC-6824-Dx-O-1-Dx-O.jpg', alt: 'Skaggmes' },
+      spillkraka: { src: 'https://i.ibb.co/C3jyMy6y/DSC-1603-Dx-O-Dx-O.jpg', alt: 'Spillkraka' },
+      notvacka: { src: 'https://i.ibb.co/b52yK8ny/DSC-7989-Dx-O-1-Dx-O.jpg', alt: 'Notvacka' },
+      tofsmes: { src: 'https://i.ibb.co/4npcVVjs/DSC-8537-Dx-O.jpg', alt: 'Tofsmes' },
+      blames: { src: 'https://i.ibb.co/bjXJ2nPV/DSC-4924-Dx-O-1.jpg', alt: 'Blames' },
+      steglits: { src: 'https://i.ibb.co/yFtmSt2S/DSC-7532-Dx-O-1-Dx-O.jpg', alt: 'Steglits' },
+      tornfalk: { src: 'https://i.ibb.co/PzgNkSz0/DSC-7426-Dx-O-Dx-O-Dx-O.jpg', alt: 'Tornfalk' },
+      isISol: { src: 'https://i.ibb.co/6RFCLnYv/DSC-8027-Dx-O-1-Dx-O.jpg', alt: 'Is i sol' },
+      koltrastISno: { src: 'https://i.ibb.co/4ZSWTVt0/DSC-7859-Dx-O-1-Dx-O.jpg', alt: 'Koltrast i sno' },
+      mindreHackspett: { src: 'https://i.ibb.co/qFVHFDt2/DSC-7099-Dx-O-1-Dx-O.jpg', alt: 'Mindre hackspett' },
+      radjur: { src: 'https://i.ibb.co/rfXjdmWx/DSC-2468-Dx-O-Dx-O-Dx-O.jpg', alt: 'Radjur' },
+      kor: { src: 'https://i.ibb.co/YH69QqJ/DSC-4724-Dx-O-Dx-O.jpg', alt: 'Kor' },
+      stenknack: { src: 'https://i.ibb.co/9kFNwtF7/DSC-7621-Dx-O-1-Dx-O.jpg', alt: 'Stenknack' },
+      stjartmesIAl: { src: 'https://i.ibb.co/4nqTzf0V/DSC-8000-Dx-O-1-Dx-O.jpg', alt: 'Stjartmes i al' }
+    };
+
+    // Manual art-directed rows. Edit sizes/placement here to change composition.
+            const portfolioRows = [
+      {
+        className: 'row-feature',
+        columns: [
+          [
+            { key: 'stjartmesInsekt', size: 'hero-compact', focus: 'stjartmes' },
+            { key: 'tofsmes', size: 'large' },
+            { key: 'stjartmesIAl', size: 'large', focus: 'left' },
+            { key: 'mindreHackspett', size: 'tall' }
+          ],
+          [
+            { key: 'ekorre', size: 'medium', focus: 'center' },
+            { key: 'skaggmes', size: 'medium' },
+            { key: 'koltrastISno', size: 'tall', focus: 'koltrast' },
+            { key: 'notvacka', size: 'medium' },
+            { key: 'kor', size: 'medium' },
+            { key: 'blames', size: 'medium' }
+          ],
+          [
+            { key: 'spillkraka', size: 'tall' },
+            { key: 'steglits', size: 'medium' },
+            { key: 'isISol', size: 'small' },
+            { key: 'tornfalk', size: 'medium' },
+            { key: 'radjur', size: 'medium' },
+            { key: 'stenknack', size: 'tall' }
+          ]
+        ]
+      }
+    ];
+
+    function createPortfolioCard(config) {
+      const image = portfolioImages[config.key];
+      if (!image) return null;
+
+      const card = document.createElement('div');
+      const focusClass = config.focus ? ` focus-${config.focus}` : '';
+      const fitClass = config.fit ? ` fit-${config.fit}` : '';
+      card.className = `portfolio-card size-${config.size}${focusClass}${fitClass}`;
+      card.onclick = () => openLightbox(card);
+
+      const img = document.createElement('img');
+      img.src = image.src;
+      img.alt = image.alt;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+
+      const overlay = document.createElement('div');
+      overlay.className = 'photo-overlay';
+      overlay.innerHTML = `<span class="photo-species">${image.alt}</span>`;
+
+      card.appendChild(img);
+      card.appendChild(overlay);
+      return card;
+    }
+
+    function renderPortfolio(rows) {
+      const root = document.getElementById('portfolioRows');
+      if (!root) return;
+      root.innerHTML = '';
+
+      rows.forEach(row => {
+        if (row.single) {
+          const section = document.createElement('div');
+          section.className = 'portfolio-row portfolio-row-single';
+          const card = createPortfolioCard(row.single);
+          if (card) section.appendChild(card);
+          root.appendChild(section);
+          return;
+        }
+
+        const section = document.createElement('div');
+        section.className = `portfolio-row${row.className ? ` ${row.className}` : ''}`;
+
+        row.columns.forEach(columnCards => {
+          const column = document.createElement('div');
+          column.className = 'portfolio-column';
+
+          columnCards.forEach(cardConfig => {
+            const card = createPortfolioCard(cardConfig);
+            if (card) column.appendChild(card);
+          });
+
+          section.appendChild(column);
+        });
+
+        root.appendChild(section);
+      });
+    }
+
+    renderPortfolio(portfolioRows);
+
     // Lightbox
     function openLightbox(item) {
       const img = item.querySelector('img');
-      document.getElementById('lightboxImg').src = img.src;
-      document.getElementById('lightbox').classList.add('open');
+      const lightboxImg = document.getElementById('lightboxImg');
+      lightboxImg.src = img.src;
+      lightboxImg.classList.remove('zoomed');
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('zoomed');
+      lightbox.classList.add('open');
+    }
+    function toggleZoom(event) {
+      event.stopPropagation();
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightbox = document.getElementById('lightbox');
+      lightboxImg.classList.toggle('zoomed');
+      lightbox.classList.toggle('zoomed');
     }
     function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('open');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightbox = document.getElementById('lightbox');
+      lightboxImg.classList.remove('zoomed');
+      lightbox.classList.remove('zoomed');
+      lightbox.classList.remove('open');
     }
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeLightbox();
     });
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
