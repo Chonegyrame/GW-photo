@@ -481,6 +481,7 @@
     .portfolio-card.focus-center img { object-position: center center; }
     .portfolio-card.focus-top img { object-position: center 22%; }
     .portfolio-card.focus-left img { object-position: 40% 50%; }
+    .portfolio-card.focus-stjartmesal img { object-position: 40% 50%; }
     .portfolio-card.focus-right img { object-position: 42% 50%; }
     .portfolio-card.focus-stjartmes img { object-position: 58% 48%; }
     .portfolio-card.focus-koltrast img { object-position: 44% 50%; }
@@ -638,6 +639,8 @@
       nav { padding: 32px 24px 18px; }
       .nav-logo { top: 22px; }
       .nav-links { display: none; }
+      .portfolio-card.focus-stjartmesal img { object-position: 62% 50%; }
+      .portfolio-card.focus-koltrast img { object-position: 34% 50%; }
       .portfolio-jump { padding: 40px 0 0; }
       .portfolio-jump-link {
         aspect-ratio: auto;
@@ -791,7 +794,7 @@
           [
             { key: 'stjartmesInsekt', size: 'hero-compact', focus: 'stjartmes' },
             { key: 'tofsmes', size: 'large' },
-            { key: 'stjartmesIAl', size: 'large', focus: 'left' },
+            { key: 'stjartmesIAl', size: 'large', focus: 'stjartmesal' },
             { key: 'radjur', size: 'tall-soft', focus: 'radjur' },
             { key: 'storhack', size: 'large', focus: 'center' }
           ],
@@ -831,6 +834,9 @@
       img.alt = image.alt;
       img.loading = 'lazy';
       img.decoding = 'async';
+      const fileName = image.src.split('/').pop();
+      img.title = `${image.alt} (${fileName})`;
+      img.dataset.filename = fileName;
 
       const overlay = document.createElement('div');
       overlay.className = 'photo-overlay';
