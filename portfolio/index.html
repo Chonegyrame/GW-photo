@@ -3,7 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GW Photo - Portfolio</title>
+  <title>Portfolio | GW Wildlife Photography</title>
+  <meta name="description" content="Browse the GW wildlife photography portfolio. Enter the Swedish Wildlife gallery with bird and nature photography from Stockholm forests.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://gwallinfoto.com/portfolio/">
+  <meta property="og:title" content="Portfolio | GW Wildlife Photography">
+  <meta property="og:description" content="Browse the GW wildlife photography portfolio and explore the Swedish Wildlife gallery.">
+  <meta property="og:image" content="https://gwallinfoto.com/images/european-robin.jpg">
+  <meta property="og:url" content="https://gwallinfoto.com/portfolio/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="GW">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Portfolio | GW Wildlife Photography">
+  <meta name="twitter:description" content="Browse the GW wildlife photography portfolio and explore the Swedish Wildlife gallery.">
+  <meta name="twitter:image" content="https://gwallinfoto.com/images/european-robin.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://gwallinfoto.com/#website",
+        "url": "https://gwallinfoto.com/",
+        "name": "GW"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://gwallinfoto.com/#person",
+        "name": "Gustav Wallin",
+        "jobTitle": "Wildlife Photographer",
+        "url": "https://gwallinfoto.com/",
+        "email": "mailto:gwallin.photo@gmail.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://gwallinfoto.com/portfolio/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://gwallinfoto.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Portfolio",
+            "item": "https://gwallinfoto.com/portfolio/"
+          }
+        ]
+      },
+      {
+        "@type": "ImageObject",
+        "name": "European robin preview image",
+        "contentUrl": "https://gwallinfoto.com/images/european-robin.jpg",
+        "caption": "European robin used as portfolio preview image."
+      }
+    ]
+  }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -66,14 +124,14 @@
     .nav-logo .name {
       font-family: 'Bodoni Moda', serif;
       font-weight: 300;
-      font-size: 22px;
+      font-size: 24px;
       letter-spacing: 0.18em;
       color: var(--white);
       display: block;
     }
 
     .nav-logo .tagline {
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 200;
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -100,7 +158,7 @@
       overflow: hidden;
       background-image:
         linear-gradient(to bottom, rgba(0,0,0,0.06), rgba(0,0,0,0.20)),
-        url('../images/rodhake.jpg');
+        url('../images/european-robin.jpg');
       background-size: cover;
       background-position: center 70%;
       cursor: pointer;
@@ -137,9 +195,17 @@
     }
 
     @media (max-width: 768px) {
-      nav { padding: 24px 24px; }
+      nav { padding: 32px 24px 18px; }
+      .nav-logo { top: 22px; }
       .nav-links { display: none; }
-      .preview-wrap { padding-top: 40px; }
+      .preview-wrap {
+        min-height: auto;
+        padding-top: 56px;
+      }
+      .wildlife-link {
+        aspect-ratio: auto;
+        height: min(52vh, 450px);
+      }
     }
   </style>
 </head>
@@ -150,7 +216,7 @@
       <li><a href="./index.html">Portfolio</a></li>
     </ul>
     <a class="nav-logo" href="../index.html#home-hero" aria-label="Go to home">
-      <span class="name">GW Photo</span>
+      <span class="name">GW</span>
       <span class="tagline">Wildlife &middot; Birds</span>
     </a>
     <ul class="nav-links">
@@ -166,4 +232,5 @@
   </section>
 </body>
 </html>
+
 
