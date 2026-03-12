@@ -22,7 +22,7 @@
       overflow-x: hidden;
     }
 
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ HERO Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== HERO ==== */
     .hero {
       position: relative;
       width: 100vw;
@@ -30,7 +30,7 @@
       overflow: hidden;
     }
 
-    /* Slideshow */
+    /* Static hero image */
     .slides {
       position: absolute;
       inset: 0;
@@ -40,15 +40,9 @@
       inset: 0;
       background-size: cover;
       background-position: center;
-      opacity: 0;
-      transition: opacity 1.8s ease;
+      opacity: 1;
     }
-    .slide.active { opacity: 1; }
-
-    /* Replace these URLs with your own bird photos */
-    .slide-1 { background-image: url('./images/knipa.jpg'); background-position: center; }
-    .slide-2 { background-image: url('./images/kungsfagel.jpg'); background-position: center 60%; }
-    .slide-3 { background-image: url('./images/rodhake.jpg'); background-position: center 60%; }
+    .slide-kungsfagel { background-image: url('./images/kungsfagel.jpg'); background-position: center 58%; }
 
     /* Dark overlay */
     .hero::after {
@@ -75,7 +69,7 @@
       pointer-events: none;
     }
 
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ NAV Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== NAV ==== */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -130,7 +124,7 @@
       margin-top: 4px;
     }
 
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ HERO TEXT Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== HERO TEXT ==== */
     .hero-content {
       position: absolute;
       bottom: 80px;
@@ -157,53 +151,7 @@
       color: var(--gold);
     }
 
-    /* Slide counter */
-    .slide-counter {
-      position: absolute;
-      right: 48px;
-      bottom: 80px;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      animation: fadeIn 2s ease 1s both;
-    }
-    .counter-num {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 10px;
-      font-weight: 200;
-      letter-spacing: 0.15em;
-      color: rgba(240,236,228,0.6);
-      writing-mode: vertical-rl;
-    }
-    .counter-line {
-      width: 1px;
-      height: 60px;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-    }
-
-    /* Nav arrows */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-      background: none;
-      border: none;
-      color: rgba(240,236,228,0.6);
-      font-size: 22px;
-      cursor: pointer;
-      padding: 16px;
-      transition: color 0.3s;
-      font-weight: 200;
-      animation: fadeIn 2s ease 1s both;
-    }
-    .arrow:hover { color: var(--white); }
-    .arrow-left { left: 20px; }
-    .arrow-right { right: 20px; }
-
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ PORTFOLIO SECTION Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== PORTFOLIO SECTION ==== */
     .portfolio {
       padding: 120px 56px;
       background: #161616;
@@ -250,18 +198,19 @@
       aspect-ratio: 1920 / 700;
       margin: 0 auto;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-end;
+      justify-content: flex-start;
       text-decoration: none;
       position: relative;
       overflow: hidden;
       border-radius: 0;
       background-image:
         linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.46)),
-        url('./images/pilfink.jpg');
+        url('./images/knipa.jpg');
       background-size: cover;
-      background-position: center 59%;
+      background-position: center 56%;
       cursor: pointer;
+      padding: 0 0 clamp(18px, 4vw, 56px) clamp(20px, 5vw, 56px);
     }
 .portfolio-jump-link::before {
       content: '';
@@ -286,6 +235,8 @@
       font-weight: 300;
       letter-spacing: 0.02em;
       color: var(--gold);
+      line-height: 1;
+      text-align: left;
     }
     /* Editorial 3-column portfolio (manual art-directed rows) */
     .portfolio-gallery {
@@ -322,6 +273,7 @@
     .portfolio-card.size-hero { height: 760px; }
     .portfolio-card.size-hero-compact { height: 540px; }
     .portfolio-card.size-tall { height: 560px; }
+    .portfolio-card.size-tall-soft { height: 520px; }
     .portfolio-card.size-large { height: 480px; }
     .portfolio-card.size-medium { height: 300px; }
     .portfolio-card.size-small { height: 210px; }
@@ -342,6 +294,7 @@
     .portfolio-card.focus-right img { object-position: 42% 50%; }
     .portfolio-card.focus-stjartmes img { object-position: 58% 48%; }
     .portfolio-card.focus-koltrast img { object-position: 44% 50%; }
+    .portfolio-card.focus-radjur img { object-position: 34% 48%; }
     .portfolio-card.fit-contain img { object-fit: contain; }
     .portfolio-card:hover img {
       transform: scale(1.02);
@@ -379,25 +332,18 @@
     .about-strip {
       padding: 100px 56px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      grid-template-columns: 1fr;
+      gap: 0;
       align-items: center;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
     .about-text .eyebrow {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 9px;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 20px;
-    }
-    .about-text h2 {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(28px, 3.5vw, 46px);
       font-weight: 300;
       font-style: italic;
       line-height: 1.2;
+      color: var(--gold);
       margin-bottom: 24px;
     }
     .about-text p {
@@ -407,29 +353,7 @@
       color: rgba(240,236,228,0.6);
       max-width: 480px;
     }
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-    }
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 56px;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--white);
-      line-height: 1;
-    }
-    .stat-label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 9px;
-      font-weight: 300;
-      letter-spacing: 0.3em;
-      color: var(--gold);
-      margin-top: 6px;
-    }
-
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ FOOTER Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== FOOTER ==== */
     footer {
       padding: 48px 56px;
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -451,7 +375,7 @@
       color: rgba(240,236,228,0.25);
     }
 
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ LIGHTBOX Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== LIGHTBOX ==== */
     .lightbox {
       position: fixed;
       inset: 0;
@@ -494,7 +418,7 @@
     }
     .lightbox-close:hover { opacity: 1; }
 
-    /* Ã¢â€â‚¬Ã¢â€â‚¬ ANIMATIONS Ã¢â€â‚¬Ã¢â€â‚¬ */
+    /* ==== ANIMATIONS ==== */
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -507,7 +431,7 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    /* â€” â€” RESPONSIVE â€” â€” */
+    /* -- RESPONSIVE -- */
     @media (max-width: 1024px) {
       .portfolio-row {
         grid-template-columns: repeat(2, 1fr);
@@ -542,29 +466,19 @@
     </a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
-      <li><a href="/cdn-cgi/l/email-protection#522b3d272012373f333b3e7c313d3f">Contact</a></li>
+      <li><a href="#about">Contact</a></li>
     </ul>
   </nav>
 
   <!-- HERO -->
   <section class="hero" id="home-hero">
     <div class="slides">
-      <div class="slide slide-1 active"></div>
-      <div class="slide slide-2"></div>
-      <div class="slide slide-3"></div>
+      <div class="slide slide-kungsfagel"></div>
     </div>
 
     <div class="hero-content">
       <h1 class="hero-title">Swedish Wildlife<br>Through the Lens</h1>
     </div>
-
-    <div class="slide-counter">
-      <span class="counter-num" id="counterText">01 / 03</span>
-      <div class="counter-line"></div>
-    </div>
-
-    <button class="arrow arrow-left" onclick="changeSlide(-1)">&larr;</button>
-    <button class="arrow arrow-right" onclick="changeSlide(1)">&rarr;</button>
   </section>
 
 
@@ -587,33 +501,14 @@
   <section class="about-strip" id="about">
     <div class="about-text">
       <div class="eyebrow">About</div>
-      <h2>Capturing Birds<br>in Their World</h2>
-      <p>A passion for bird photography Ã¢â‚¬â€ finding stillness in the wild and bringing it home through the lens. Every shot is a moment of patience rewarded, a connection between observer and the observed.</p>
-    </div>
-    <div class="about-stats">
-      <div>
-        <div class="stat-num">Ã¢Ë†Å¾</div>
-        <div class="stat-label">Hours in the Field</div>
-      </div>
-      <div>
-        <div class="stat-num">100+</div>
-        <div class="stat-label">Species Captured</div>
-      </div>
-      <div>
-        <div class="stat-num">SE</div>
-        <div class="stat-label">Based in Sweden</div>
-      </div>
-      <div>
-        <div class="stat-num">RAW</div>
-        <div class="stat-label">Always Shooting</div>
-      </div>
+      <p>Started photographing late summer of 2025, mostly in nearby forests in Stockholm. All photos taken with D7100 and 200-500 f5.6 lens. To contact me, send me an email at gwallin.photo@gmail.com.</p>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <span class="footer-name">GW Photo</span>
-    <span class="footer-copy">Ã‚Â© 2026 Ã‚Â· All rights reserved</span>
+    <span class="footer-copy">&copy; 2026 &middot; All rights reserved</span>
   </footer>
 
   <!-- LIGHTBOX -->
@@ -623,21 +518,7 @@
   </div>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Slideshow
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const counter = document.getElementById('counterText');
-
-    function goToSlide(n) {
-      slides[currentSlide].classList.remove('active');
-      currentSlide = (n + slides.length) % slides.length;
-      slides[currentSlide].classList.add('active');
-      counter.textContent = `0${currentSlide + 1} / 0${slides.length}`;
-    }
-    function changeSlide(dir) { goToSlide(currentSlide + dir); }
-
-    // Auto-advance every 6s
-    setInterval(() => changeSlide(1), 6000);
+    // Hero is intentionally static.
     // Home and portfolio state
     const homeLink = document.getElementById('homeLink');
     const homeLogoLink = document.getElementById('homeLogoLink');
@@ -696,7 +577,9 @@
       radjur: { src: './images/radjur.jpg', alt: 'Radjur' },
       kor: { src: './images/kor.jpg', alt: 'Kor' },
       stenknack: { src: './images/stenknack.jpg', alt: 'Stenknack' },
-      stjartmesIAl: { src: './images/stjartmesal.jpg', alt: 'Stjartmes i al' }
+      stjartmesIAl: { src: './images/stjartmesal.jpg', alt: 'Stjartmes i al' },
+      storhack: { src: './images/storhack.jpg', alt: 'Stor hackspett' },
+      entita: { src: './images/entita.jpg', alt: 'Entita' }
     };
 
     // Manual art-directed rows. Edit sizes/placement here to change composition.
@@ -708,7 +591,8 @@
             { key: 'stjartmesInsekt', size: 'hero-compact', focus: 'stjartmes' },
             { key: 'tofsmes', size: 'large' },
             { key: 'stjartmesIAl', size: 'large', focus: 'left' },
-            { key: 'mindreHackspett', size: 'tall' }
+            { key: 'radjur', size: 'tall-soft', focus: 'radjur' },
+            { key: 'storhack', size: 'large', focus: 'center' }
           ],
           [
             { key: 'ekorre', size: 'medium', focus: 'center' },
@@ -716,14 +600,15 @@
             { key: 'koltrastISno', size: 'tall', focus: 'koltrast' },
             { key: 'notvacka', size: 'medium' },
             { key: 'kor', size: 'medium' },
-            { key: 'blames', size: 'medium' }
+            { key: 'blames', size: 'medium' },
+            { key: 'entita', size: 'small', focus: 'center' }
           ],
           [
             { key: 'spillkraka', size: 'tall' },
             { key: 'steglits', size: 'medium' },
             { key: 'isISol', size: 'small' },
             { key: 'tornfalk', size: 'medium' },
-            { key: 'radjur', size: 'medium' },
+            { key: 'mindreHackspett', size: 'medium' },
             { key: 'stenknack', size: 'tall' }
           ]
         ]

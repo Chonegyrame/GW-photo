@@ -127,6 +127,7 @@
     .portfolio-card.size-hero { height: 760px; }
     .portfolio-card.size-hero-compact { height: 540px; }
     .portfolio-card.size-tall { height: 560px; }
+    .portfolio-card.size-tall-soft { height: 520px; }
     .portfolio-card.size-large { height: 480px; }
     .portfolio-card.size-medium { height: 300px; }
     .portfolio-card.size-small { height: 210px; }
@@ -148,6 +149,7 @@
     .portfolio-card.focus-right img { object-position: 42% 50%; }
     .portfolio-card.focus-stjartmes img { object-position: 58% 48%; }
     .portfolio-card.focus-koltrast img { object-position: 44% 50%; }
+    .portfolio-card.focus-radjur img { object-position: 34% 48%; }
     .portfolio-card.fit-contain img { object-fit: contain; }
 
     .portfolio-card:hover img {
@@ -230,7 +232,6 @@
     </a>
     <ul class="nav-links">
       <li><a href="../index.html#about">About</a></li>
-      <li><a href="#gallery">Gallery</a></li>
     </ul>
   </nav>
 
@@ -262,7 +263,9 @@
       radjur: { src: '../images/radjur.jpg', alt: 'Radjur' },
       kor: { src: '../images/kor.jpg', alt: 'Kor' },
       stenknack: { src: '../images/stenknack.jpg', alt: 'Stenknack' },
-      stjartmesIAl: { src: '../images/stjartmesal.jpg', alt: 'Stjartmes i al' }
+      stjartmesIAl: { src: '../images/stjartmesal.jpg', alt: 'Stjartmes i al' },
+      storhack: { src: '../images/storhack.jpg', alt: 'Stor hackspett' },
+      entita: { src: '../images/entita.jpg', alt: 'Entita' }
     };
 
     const portfolioRows = [
@@ -273,7 +276,8 @@
             { key: 'stjartmesInsekt', size: 'hero-compact', focus: 'stjartmes' },
             { key: 'tofsmes', size: 'large' },
             { key: 'stjartmesIAl', size: 'large', focus: 'left' },
-            { key: 'mindreHackspett', size: 'tall' }
+            { key: 'radjur', size: 'tall-soft', focus: 'radjur' },
+            { key: 'storhack', size: 'large', focus: 'center' }
           ],
           [
             { key: 'ekorre', size: 'medium', focus: 'center' },
@@ -281,14 +285,15 @@
             { key: 'koltrastISno', size: 'tall', focus: 'koltrast' },
             { key: 'notvacka', size: 'medium' },
             { key: 'kor', size: 'medium' },
-            { key: 'blames', size: 'medium' }
+            { key: 'blames', size: 'medium' },
+            { key: 'entita', size: 'small', focus: 'center' }
           ],
           [
             { key: 'spillkraka', size: 'tall' },
             { key: 'steglits', size: 'medium' },
             { key: 'isISol', size: 'small' },
             { key: 'tornfalk', size: 'medium' },
-            { key: 'radjur', size: 'medium' },
+            { key: 'mindreHackspett', size: 'medium' },
             { key: 'stenknack', size: 'tall' }
           ]
         ]
