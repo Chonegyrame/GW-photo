@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:/Users/gusta/OneDrive/Dokument/ai agency codex/GW-photo\" remote -v)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}
