@@ -635,10 +635,57 @@
       }
     }
 
+    /* ==== HAMBURGER ==== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 200;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: rgba(240,236,228,0.85);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(18,17,15,0.97);
+      z-index: 150;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(240,236,228,0.85);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+
     @media (max-width: 768px) {
       nav { padding: 32px 24px 18px; }
       .nav-logo { top: 22px; }
       .nav-links { display: none; }
+      .hamburger { display: flex; }
       .portfolio-card.focus-stjartmesal img { object-position: 62% 50%; }
       .portfolio-card.focus-koltrast img { object-position: 34% 50%; }
       .portfolio-jump { padding: 40px 0 0; }
@@ -672,7 +719,18 @@
       <li><a href="#about">About</a></li>
       <li><a href="#about">Contact</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home-hero" class="mobile-nav-link">Home</a>
+    <a href="./portfolio/index.html" class="mobile-nav-link">Portfolio</a>
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#about" class="mobile-nav-link">Contact</a>
+  </div>
 
   <!-- HERO -->
   <section class="hero" id="home-hero">
@@ -940,6 +998,20 @@
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
     });
   </script>
 </body>
