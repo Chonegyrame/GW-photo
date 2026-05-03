@@ -297,15 +297,38 @@
       .portfolio-row-single { grid-template-columns: 1fr; }
     }
 
+    .mobile-home-link { display: none; }
+
     @media (max-width: 768px) {
-      nav { padding: 32px 24px 18px; }
-      .nav-logo { top: 22px; }
+      nav { padding: 22px 24px 14px; }
+      .nav-logo { top: 18px; }
       .nav-links { display: none; }
+      .mobile-home-link {
+        display: inline-block;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 10.5px;
+        font-weight: 300;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(240,236,228,0.85);
+        text-decoration: none;
+      }
+      .mobile-home-link:hover { color: var(--gold); }
       .portfolio-card.focus-stjartmesal img { object-position: 62% 50%; }
       .portfolio-card.focus-koltrast img { object-position: 34% 50%; }
       .portfolio { padding: 88px 24px; }
       .portfolio-row { grid-template-columns: 1fr; }
       .portfolio-row.row-feature { grid-template-columns: 1fr; }
+      /* Mobile card heights — ~25% reduction from desktop */
+      .portfolio-card.size-hero { height: 570px; }
+      .portfolio-card.size-solo { height: 465px; }
+      .portfolio-card.size-tall { height: 420px; }
+      .portfolio-card.size-hero-compact { height: 375px; }
+      .portfolio-card.size-tall-soft { height: 390px; }
+      .portfolio-card.size-large { height: 360px; }
+      .portfolio-card.size-large-soft { height: 300px; }
+      .portfolio-card.size-medium { height: 225px; }
+      .portfolio-card.size-small { height: 158px; }
     }
   </style>
 </head>
@@ -315,6 +338,7 @@
       <li><a href="../index.html#home-hero">Home</a></li>
       <li><a href="../portfolio/index.html">Portfolio</a></li>
     </ul>
+    <a class="mobile-home-link" href="../index.html#home-hero">Home</a>
     <a class="nav-logo" href="../index.html#home-hero" aria-label="Go to home">
       <span class="name">GW</span>
       <span class="tagline">Wildlife &middot; Birds</span>
@@ -457,7 +481,7 @@
       const isMobile = window.matchMedia('(max-width: 768px)').matches;
       if (!isMobile) return portfolioRows;
 
-      return portfolioRows.map(row => {
+      const swapped = portfolioRows.map(row => {
         if (!row.columns) return row;
         return {
           ...row,
@@ -471,6 +495,21 @@
             )
           )
         };
+      });
+
+      // Mobile: interleave columns left-to-right so the visit order is
+      // col1[0], col2[0], col3[0], col1[1], col2[1], col3[1], ...
+      // instead of stacking each column's full contents in turn.
+      return swapped.map(row => {
+        if (!row.columns) return row;
+        const maxLen = Math.max(...row.columns.map(c => c.length));
+        const interleaved = [];
+        for (let i = 0; i < maxLen; i++) {
+          for (const column of row.columns) {
+            if (column[i]) interleaved.push(column[i]);
+          }
+        }
+        return { ...row, columns: [interleaved] };
       });
     }
 
