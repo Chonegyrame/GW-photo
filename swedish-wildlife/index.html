@@ -270,8 +270,8 @@
       max-width: none;
       width: auto;
       max-height: none;
-      height: 170vh;
-      margin: 6vh auto;
+      height: 130vh;
+      margin: 0;
       display: block;
       cursor: zoom-out;
       transform: none;
@@ -525,18 +525,22 @@
       const rect = lightboxImg.getBoundingClientRect();
       const relX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
       const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+      const tapX = event.clientX;
+      const tapY = event.clientY;
 
       lightboxImg.classList.add('zoomed');
       lightbox.classList.add('zoomed');
+      lightbox.scrollLeft = 0;
+      lightbox.scrollTop = 0;
 
+      // Two rAFs so the new layout fully settles before we measure.
       requestAnimationFrame(() => {
-        const newRect = lightboxImg.getBoundingClientRect();
-        const targetX = newRect.left + relX * newRect.width;
-        const targetY = newRect.top + relY * newRect.height;
-        lightbox.scrollBy({
-          left: targetX - event.clientX,
-          top: targetY - event.clientY,
-          behavior: 'auto'
+        requestAnimationFrame(() => {
+          const newRect = lightboxImg.getBoundingClientRect();
+          // newRect.left/top are in viewport coords with current scroll = 0.
+          // We want the rel point to land at (tapX, tapY) — solve for scroll.
+          lightbox.scrollLeft = newRect.left + relX * newRect.width - tapX;
+          lightbox.scrollTop = newRect.top + relY * newRect.height - tapY;
         });
       });
     }
