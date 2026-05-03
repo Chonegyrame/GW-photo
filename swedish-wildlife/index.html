@@ -481,26 +481,10 @@
       const isMobile = window.matchMedia('(max-width: 768px)').matches;
       if (!isMobile) return portfolioRows;
 
-      const swapped = portfolioRows.map(row => {
-        if (!row.columns) return row;
-        return {
-          ...row,
-          columns: row.columns.map(columnCards =>
-            columnCards.map(cardConfig =>
-              cardConfig.key === 'radjur'
-                ? { ...cardConfig, key: 'spillkraka' }
-                : cardConfig.key === 'spillkraka'
-                ? { ...cardConfig, key: 'radjur' }
-                : cardConfig
-            )
-          )
-        };
-      });
-
       // Mobile: interleave columns left-to-right so the visit order is
       // col1[0], col2[0], col3[0], col1[1], col2[1], col3[1], ...
       // instead of stacking each column's full contents in turn.
-      return swapped.map(row => {
+      return portfolioRows.map(row => {
         if (!row.columns) return row;
         const maxLen = Math.max(...row.columns.map(c => c.length));
         const interleaved = [];
