@@ -544,8 +544,26 @@
     // which returns mid-animation values during CSS transitions.
     let tx = 0, ty = 0, s = 1;
     let unzoomedRect = null;
+    const MIN_SCALE = 1;
     const MAX_SCALE = 8;
+    const ELASTIC_DAMPING = 0.3;     // how slowly scale grows past the limits
+    const HARD_MAX = MAX_SCALE * 1.25; // absolute ceiling during pinch (10x)
+    const HARD_MIN = MIN_SCALE * 0.85; // absolute floor during pinch (0.85x)
     const ZOOM_TARGET_SCALE_VH = 1.3; // double-tap zoom target = 130vh tall
+
+    function applyElastic(rawScale) {
+      // Rubber-band: past the limits, scale grows/shrinks at a fraction of the
+      // raw input. Caller is responsible for snapping back on gesture end.
+      if (rawScale > MAX_SCALE) {
+        const overshoot = rawScale - MAX_SCALE;
+        return Math.min(HARD_MAX, MAX_SCALE + overshoot * ELASTIC_DAMPING);
+      }
+      if (rawScale < MIN_SCALE) {
+        const undershoot = MIN_SCALE - rawScale;
+        return Math.max(HARD_MIN, MIN_SCALE - undershoot * ELASTIC_DAMPING);
+      }
+      return rawScale;
+    }
 
     function getImg() { return document.getElementById('lightboxImg'); }
 
@@ -601,20 +619,52 @@
     }
 
     function setZoomState(newTx, newTy, newScale, animate) {
+      // Hard-clamped state setter — used for double-tap, snap-back, and pan.
       const img = getImg();
       const nat = getNaturalRect();
-      s = Math.max(1, Math.min(MAX_SCALE, newScale));
+      s = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
       const clamped = clampTranslate(newTx, newTy, s, nat);
       tx = clamped.tx;
       ty = clamped.ty;
-      if (!animate) {
-        img.classList.add('dragging');
-      } else {
-        img.classList.remove('dragging');
-      }
+      if (!animate) img.classList.add('dragging');
+      else img.classList.remove('dragging');
       applyTransform();
       if (s > 1.0001) img.classList.add('zoomed');
       else img.classList.remove('zoomed');
+    }
+
+    function setRawTransform(newTx, newTy, newScale) {
+      // Unclamped state setter for live pinch — allows elastic overshoot.
+      // No clampTranslate so the image can drift out a bit during the gesture;
+      // touchend snaps everything back into bounds.
+      const img = getImg();
+      s = newScale;
+      tx = newTx;
+      ty = newTy;
+      img.classList.add('dragging');
+      applyTransform();
+      if (s > 1.0001) img.classList.add('zoomed');
+      else img.classList.remove('zoomed');
+    }
+
+    function snapBackToBounds() {
+      // Called on touchend. If scale ended outside [MIN, MAX] during elastic
+      // overshoot, snap-animate back to the nearest legal scale while anchoring
+      // the viewport center to the same image-pixel (so the user doesn't see
+      // the image visibly shift on release).
+      if (s >= MIN_SCALE - 0.0001 && s <= MAX_SCALE + 0.0001) {
+        setZoomState(tx, ty, s, true);
+        return;
+      }
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const nat = getNaturalRect();
+      const imgX = (cx - nat.left - tx) / s;
+      const imgY = (cy - nat.top - ty) / s;
+      const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
+      const newTx = cx - nat.left - imgX * newScale;
+      const newTy = cy - nat.top - imgY * newScale;
+      setZoomState(newTx, newTy, newScale, true);
     }
 
     function zoomToPoint(event) {
@@ -701,11 +751,14 @@
           e.preventDefault();
           const m = midpoint(e.touches[0], e.touches[1]);
           const dist = distance(e.touches[0], e.touches[1]);
-          const proposedScale = pinchStart.scale * (dist / pinchStart.dist);
-          // Keep the same image-pixel under the (possibly-moved) midpoint.
-          const newTx = m.x - pinchStart.natLeft - pinchStart.pivotImgX * proposedScale;
-          const newTy = m.y - pinchStart.natTop - pinchStart.pivotImgY * proposedScale;
-          setZoomState(newTx, newTy, proposedScale, false);
+          const rawScale = pinchStart.scale * (dist / pinchStart.dist);
+          // Apply rubber-banding past the [MIN, MAX] range. Critically, use
+          // the elastic (actually-applied) scale — not the raw input — when
+          // computing translate, otherwise tx/ty drift while scale is pinned.
+          const appliedScale = applyElastic(rawScale);
+          const newTx = m.x - pinchStart.natLeft - pinchStart.pivotImgX * appliedScale;
+          const newTy = m.y - pinchStart.natTop - pinchStart.pivotImgY * appliedScale;
+          setRawTransform(newTx, newTy, appliedScale);
         }
       }, { passive: false });
 
@@ -713,15 +766,9 @@
         if (e.touches.length === 0) {
           dragStart = null;
           pinchStart = null;
-          img.classList.remove('dragging');
-          // Snap-back: if scale ended at 1, ensure tx/ty are exactly centered.
-          if (s <= 1.0001) {
-            const nat = getNaturalRect();
-            const clamped = clampTranslate(0, 0, 1, nat);
-            tx = clamped.tx; ty = clamped.ty; s = 1;
-            applyTransform();
-            img.classList.remove('zoomed');
-          }
+          // If gesture left scale outside [MIN, MAX] (elastic overshoot),
+          // snap-animate back into legal range with bounds clamping.
+          snapBackToBounds();
         } else if (e.touches.length === 1) {
           pinchStart = null;
         }
