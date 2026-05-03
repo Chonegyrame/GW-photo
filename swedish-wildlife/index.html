@@ -213,6 +213,8 @@
     .portfolio-card.size-large { height: 480px; }
     .portfolio-card.size-large-soft { height: 400px; }
     .portfolio-card.size-medium { height: 300px; }
+    .portfolio-card.size-medium-tall { height: 320px; }
+    .portfolio-card.size-medium-soft { height: 250px; }
     .portfolio-card.size-small { height: 210px; }
     .portfolio-card.size-solo { height: 620px; }
 
@@ -328,6 +330,8 @@
       .portfolio-card.size-large { height: 360px; }
       .portfolio-card.size-large-soft { height: 300px; }
       .portfolio-card.size-medium { height: 225px; }
+      .portfolio-card.size-medium-tall { height: 240px; }
+      .portfolio-card.size-medium-soft { height: 188px; }
       .portfolio-card.size-small { height: 158px; }
     }
   </style>
@@ -405,13 +409,13 @@
             { key: 'kor', size: 'medium' },
             { key: 'tornfalk', size: 'medium' },
             { key: 'entita', size: 'small', focus: 'center' },
-            { key: 'gardsmyg', size: 'medium', focus: 'center' }
+            { key: 'isISol', size: 'medium-soft', focus: 'center' }
           ],
           [
             { key: 'spillkraka', size: 'medium' },
             { key: 'goktyta', size: 'medium', focus: 'center' },
             { key: 'steglits', size: 'medium' },
-            { key: 'isISol', size: 'small' },
+            { key: 'gardsmyg', size: 'medium-tall' },
             { key: 'blames', size: 'medium' },
             { key: 'koltrastISno', size: 'tall', focus: 'koltrast' },
             { key: 'mindreHackspett', size: 'medium' },
@@ -436,9 +440,6 @@
       img.alt = image.alt;
       img.loading = 'lazy';
       img.decoding = 'async';
-      const fileName = image.src.split('/').pop();
-      img.title = `${image.alt} (${fileName})`;
-      img.dataset.filename = fileName;
       card.appendChild(img);
       return card;
     }
