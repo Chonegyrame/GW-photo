@@ -255,7 +255,7 @@
     }
 
     .lightbox.open { display: flex; overflow: hidden; }
-    .lightbox.open.zoomed { display: flex; overflow-y: auto; overflow-x: hidden; align-items: flex-start; justify-content: center; }
+    .lightbox.open.zoomed { display: flex; overflow: auto; align-items: flex-start; justify-content: center; }
     .lightbox.open.zoomed .lightbox-close { position: fixed; }
 
     .lightbox img {
@@ -360,7 +360,7 @@
 
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">&times;</button>
-    <img id="lightboxImg" src="" alt="" loading="lazy" decoding="async" onclick="toggleZoom(event)">
+    <img id="lightboxImg" src="" alt="" loading="lazy" decoding="async">
   </div>
 
   <script>
@@ -519,13 +519,56 @@
       lightbox.classList.add('open');
     }
 
-    function toggleZoom(event) {
-      event.stopPropagation();
-      const lightboxImg = document.getElementById('lightboxImg');
+    function zoomToPoint(event) {
       const lightbox = document.getElementById('lightbox');
-      lightboxImg.classList.toggle('zoomed');
-      lightbox.classList.toggle('zoomed');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const rect = lightboxImg.getBoundingClientRect();
+      const relX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+
+      lightboxImg.classList.add('zoomed');
+      lightbox.classList.add('zoomed');
+
+      requestAnimationFrame(() => {
+        const newRect = lightboxImg.getBoundingClientRect();
+        const targetX = newRect.left + relX * newRect.width;
+        const targetY = newRect.top + relY * newRect.height;
+        lightbox.scrollBy({
+          left: targetX - event.clientX,
+          top: targetY - event.clientY,
+          behavior: 'auto'
+        });
+      });
     }
+
+    function exitZoom() {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      lightboxImg.classList.remove('zoomed');
+      lightbox.classList.remove('zoomed');
+      lightbox.scrollTo({ left: 0, top: 0, behavior: 'auto' });
+    }
+
+    // Wire up double-tap / double-click on the lightbox image only.
+    // Single tap does nothing so users don't accidentally zoom.
+    (() => {
+      const lightboxImg = document.getElementById('lightboxImg');
+      let lastTap = 0;
+      lightboxImg.addEventListener('click', event => {
+        event.stopPropagation();
+        const now = Date.now();
+        if (now - lastTap < 350 && lastTap !== 0) {
+          if (lightboxImg.classList.contains('zoomed')) {
+            exitZoom();
+          } else {
+            zoomToPoint(event);
+          }
+          lastTap = 0;
+        } else {
+          lastTap = now;
+        }
+      });
+    })();
 
     function closeLightbox() {
       const lightboxImg = document.getElementById('lightboxImg');
@@ -533,6 +576,7 @@
       lightboxImg.classList.remove('zoomed');
       lightbox.classList.remove('zoomed');
       lightbox.classList.remove('open');
+      lightbox.scrollTo({ left: 0, top: 0, behavior: 'auto' });
     }
 
     document.addEventListener('keydown', e => {
