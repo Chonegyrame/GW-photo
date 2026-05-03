@@ -255,7 +255,6 @@
     }
 
     .lightbox.open { display: flex; overflow: hidden; }
-    .lightbox.open.zoomed { display: block; overflow: auto; }
     .lightbox.open.zoomed .lightbox-close { position: fixed; }
 
     .lightbox img {
@@ -263,18 +262,17 @@
       max-height: 90vh;
       object-fit: cover;
       cursor: zoom-in;
-      transition: transform 0.25s ease;
+      transform-origin: 50% 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      -webkit-user-drag: none;
+      touch-action: none;
     }
 
-    .lightbox img.zoomed {
-      max-width: none;
-      width: auto;
-      max-height: none;
-      height: 130vh;
-      margin: 0;
-      display: block;
-      cursor: zoom-out;
-      transform: none;
+    .lightbox img.zoomed { cursor: grab; }
+    .lightbox img.dragging {
+      cursor: grabbing;
+      transition: none;
     }
 
     .lightbox-close {
@@ -513,51 +511,64 @@
       const img = item.querySelector('img');
       const lightboxImg = document.getElementById('lightboxImg');
       lightboxImg.src = img.src;
-      lightboxImg.classList.remove('zoomed');
+      // Reset transform/zoom state when opening a new image.
+      zoomScale = 1;
+      zoomOriginX = 50;
+      zoomOriginY = 50;
+      panX = 0;
+      panY = 0;
+      lightboxImg.style.transformOrigin = '50% 50%';
+      lightboxImg.style.transform = 'translate(0, 0) scale(1)';
+      lightboxImg.classList.remove('zoomed', 'dragging');
       const lightbox = document.getElementById('lightbox');
-      lightbox.classList.remove('zoomed');
       lightbox.classList.add('open');
     }
 
+    // Transform-based zoom state for the lightbox image.
+    let zoomScale = 1;
+    let zoomOriginX = 50;  // percent
+    let zoomOriginY = 50;  // percent
+    let panX = 0;          // px translate after scaling
+    let panY = 0;
+
+    function applyTransform() {
+      const img = document.getElementById('lightboxImg');
+      img.style.transformOrigin = `${zoomOriginX}% ${zoomOriginY}%`;
+      img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+    }
+
     function zoomToPoint(event) {
-      const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightboxImg');
       const rect = lightboxImg.getBoundingClientRect();
       const relX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
       const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-      const tapX = event.clientX;
-      const tapY = event.clientY;
 
+      zoomOriginX = relX * 100;
+      zoomOriginY = relY * 100;
+      // Target zoom: image visually grows so its height fills ~130vh.
+      zoomScale = (window.innerHeight * 1.3) / rect.height;
+      panX = 0;
+      panY = 0;
+      applyTransform();
       lightboxImg.classList.add('zoomed');
-      lightbox.classList.add('zoomed');
-      lightbox.scrollLeft = 0;
-      lightbox.scrollTop = 0;
-
-      // Two rAFs so the new layout fully settles before we measure.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const newRect = lightboxImg.getBoundingClientRect();
-          // newRect.left/top are in viewport coords with current scroll = 0.
-          // We want the rel point to land at (tapX, tapY) — solve for scroll.
-          lightbox.scrollLeft = newRect.left + relX * newRect.width - tapX;
-          lightbox.scrollTop = newRect.top + relY * newRect.height - tapY;
-        });
-      });
     }
 
     function exitZoom() {
-      const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightboxImg');
+      zoomScale = 1;
+      zoomOriginX = 50;
+      zoomOriginY = 50;
+      panX = 0;
+      panY = 0;
+      applyTransform();
       lightboxImg.classList.remove('zoomed');
-      lightbox.classList.remove('zoomed');
-      lightbox.scrollTo({ left: 0, top: 0, behavior: 'auto' });
     }
 
-    // Wire up double-tap / double-click on the lightbox image only.
-    // Single tap does nothing so users don't accidentally zoom.
+    // Wire up double-tap/double-click, single-finger pan, and pinch-to-exit.
     (() => {
       const lightboxImg = document.getElementById('lightboxImg');
       let lastTap = 0;
+
       lightboxImg.addEventListener('click', event => {
         event.stopPropagation();
         const now = Date.now();
@@ -572,15 +583,75 @@
           lastTap = now;
         }
       });
+
+      // Pan (one finger) and pinch-to-zoom (two fingers) — pinch scales
+      // proportionally to the finger distance, like a standard photo viewer.
+      let dragStart = null;
+      let pinchStart = null;
+
+      function distance(t1, t2) {
+        return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      }
+
+      lightboxImg.addEventListener('touchstart', e => {
+        if (e.touches.length === 1 && lightboxImg.classList.contains('zoomed')) {
+          const t = e.touches[0];
+          dragStart = { x: t.clientX, y: t.clientY, panX, panY };
+          lightboxImg.classList.add('dragging');
+        } else if (e.touches.length === 2) {
+          dragStart = null;
+          pinchStart = {
+            dist: distance(e.touches[0], e.touches[1]),
+            scale: zoomScale
+          };
+          lightboxImg.classList.add('dragging');
+        }
+      }, { passive: true });
+
+      lightboxImg.addEventListener('touchmove', e => {
+        if (e.touches.length === 1 && dragStart) {
+          e.preventDefault();
+          const t = e.touches[0];
+          panX = dragStart.panX + (t.clientX - dragStart.x);
+          panY = dragStart.panY + (t.clientY - dragStart.y);
+          applyTransform();
+        } else if (e.touches.length === 2 && pinchStart) {
+          e.preventDefault();
+          const dist = distance(e.touches[0], e.touches[1]);
+          const newScale = pinchStart.scale * (dist / pinchStart.dist);
+          zoomScale = Math.max(1, Math.min(8, newScale));
+          applyTransform();
+          if (zoomScale <= 1) {
+            // Fully pinched back to fit-view — drop zoomed state but keep
+            // touch tracking active so re-pinching out continues smoothly.
+            lightboxImg.classList.remove('zoomed');
+          } else {
+            lightboxImg.classList.add('zoomed');
+          }
+        }
+      }, { passive: false });
+
+      lightboxImg.addEventListener('touchend', e => {
+        if (e.touches.length === 0) {
+          dragStart = null;
+          pinchStart = null;
+          lightboxImg.classList.remove('dragging');
+        } else if (e.touches.length === 1) {
+          pinchStart = null;
+        }
+      });
+
+      lightboxImg.addEventListener('touchcancel', () => {
+        dragStart = null;
+        pinchStart = null;
+        lightboxImg.classList.remove('dragging');
+      });
     })();
 
     function closeLightbox() {
-      const lightboxImg = document.getElementById('lightboxImg');
       const lightbox = document.getElementById('lightbox');
-      lightboxImg.classList.remove('zoomed');
-      lightbox.classList.remove('zoomed');
+      exitZoom();
       lightbox.classList.remove('open');
-      lightbox.scrollTo({ left: 0, top: 0, behavior: 'auto' });
     }
 
     document.addEventListener('keydown', e => {
