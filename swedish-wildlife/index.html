@@ -255,7 +255,7 @@
     }
 
     .lightbox.open { display: flex; overflow: hidden; }
-    .lightbox.open.zoomed { display: flex; overflow: auto; align-items: flex-start; justify-content: center; }
+    .lightbox.open.zoomed { display: block; overflow: auto; }
     .lightbox.open.zoomed .lightbox-close { position: fixed; }
 
     .lightbox img {
@@ -267,7 +267,7 @@
     }
 
     .lightbox img.zoomed {
-      max-width: 90vw;
+      max-width: none;
       width: auto;
       max-height: none;
       height: 170vh;
