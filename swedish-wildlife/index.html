@@ -262,7 +262,7 @@
       max-height: 90vh;
       object-fit: cover;
       cursor: zoom-in;
-      transform-origin: 50% 50%;
+      transform-origin: 0 0;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       -webkit-user-drag: none;
@@ -512,139 +512,225 @@
       const lightboxImg = document.getElementById('lightboxImg');
       lightboxImg.src = img.src;
       // Reset transform/zoom state when opening a new image.
-      zoomScale = 1;
-      zoomOriginX = 50;
-      zoomOriginY = 50;
-      panX = 0;
-      panY = 0;
-      lightboxImg.style.transformOrigin = '50% 50%';
-      lightboxImg.style.transform = 'translate(0, 0) scale(1)';
+      tx = 0;
+      ty = 0;
+      s = 1;
+      unzoomedRect = null;
+      // Reset transform without triggering the transition (otherwise getNaturalRect
+      // could be wrong before the animation finishes).
+      lightboxImg.classList.add('dragging');
+      lightboxImg.style.transform = 'translate(0px, 0px) scale(1)';
+      // Force a reflow so the no-transition transform is committed before we
+      // remove the dragging class.
+      lightboxImg.offsetHeight;
       lightboxImg.classList.remove('zoomed', 'dragging');
+      // Compute unzoomedRect once the new image's intrinsic size is known.
+      const captureRect = () => { unzoomedRect = computeUnzoomedRect(); };
+      if (lightboxImg.complete && lightboxImg.naturalWidth) captureRect();
+      else lightboxImg.addEventListener('load', captureRect, { once: true });
       const lightbox = document.getElementById('lightbox');
       lightbox.classList.add('open');
     }
 
-    // Transform-based zoom state for the lightbox image.
-    let zoomScale = 1;
-    let zoomOriginX = 50;  // percent
-    let zoomOriginY = 50;  // percent
-    let panX = 0;          // px translate after scaling
-    let panY = 0;
+    // Recompute on viewport resize so panning/clamping stays correct.
+    window.addEventListener('resize', () => {
+      unzoomedRect = computeUnzoomedRect();
+    });
+
+    // Transform-based zoom for the lightbox image.
+    // The image is transformed as: translate(tx, ty) scale(s) with origin (0, 0).
+    // We compute the natural (unzoomed) display rect deterministically from
+    // the image's intrinsic size and viewport — never from getBoundingClientRect,
+    // which returns mid-animation values during CSS transitions.
+    let tx = 0, ty = 0, s = 1;
+    let unzoomedRect = null;
+    const MAX_SCALE = 8;
+    const ZOOM_TARGET_SCALE_VH = 1.3; // double-tap zoom target = 130vh tall
+
+    function getImg() { return document.getElementById('lightboxImg'); }
+
+    function computeUnzoomedRect() {
+      const img = getImg();
+      if (!img.naturalWidth || !img.naturalHeight) return null;
+      const nw = img.naturalWidth;
+      const nh = img.naturalHeight;
+      const maxW = window.innerWidth * 0.9;
+      const maxH = window.innerHeight * 0.9;
+      const ratio = nw / nh;
+      let w = nw, h = nh;
+      if (w > maxW) { w = maxW; h = w / ratio; }
+      if (h > maxH) { h = maxH; w = h * ratio; }
+      return {
+        left: (window.innerWidth - w) / 2,
+        top: (window.innerHeight - h) / 2,
+        width: w,
+        height: h
+      };
+    }
+
+    function getNaturalRect() {
+      if (!unzoomedRect) unzoomedRect = computeUnzoomedRect();
+      return unzoomedRect;
+    }
+
+    function clampTranslate(tx, ty, s, nat) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scaledW = nat.width * s;
+      const scaledH = nat.height * s;
+      let outTx, outTy;
+      if (scaledW > vw) {
+        const maxTx = -nat.left;
+        const minTx = vw - nat.left - scaledW;
+        outTx = Math.max(minTx, Math.min(maxTx, tx));
+      } else {
+        outTx = (vw - scaledW) / 2 - nat.left;
+      }
+      if (scaledH > vh) {
+        const maxTy = -nat.top;
+        const minTy = vh - nat.top - scaledH;
+        outTy = Math.max(minTy, Math.min(maxTy, ty));
+      } else {
+        outTy = (vh - scaledH) / 2 - nat.top;
+      }
+      return { tx: outTx, ty: outTy };
+    }
 
     function applyTransform() {
-      const img = document.getElementById('lightboxImg');
-      img.style.transformOrigin = `${zoomOriginX}% ${zoomOriginY}%`;
-      img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+      getImg().style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+    }
+
+    function setZoomState(newTx, newTy, newScale, animate) {
+      const img = getImg();
+      const nat = getNaturalRect();
+      s = Math.max(1, Math.min(MAX_SCALE, newScale));
+      const clamped = clampTranslate(newTx, newTy, s, nat);
+      tx = clamped.tx;
+      ty = clamped.ty;
+      if (!animate) {
+        img.classList.add('dragging');
+      } else {
+        img.classList.remove('dragging');
+      }
+      applyTransform();
+      if (s > 1.0001) img.classList.add('zoomed');
+      else img.classList.remove('zoomed');
     }
 
     function zoomToPoint(event) {
-      const lightboxImg = document.getElementById('lightboxImg');
-      const rect = lightboxImg.getBoundingClientRect();
-      const relX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-      const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-
-      zoomOriginX = relX * 100;
-      zoomOriginY = relY * 100;
-      // Target zoom: image visually grows so its height fills ~130vh.
-      zoomScale = (window.innerHeight * 1.3) / rect.height;
-      panX = 0;
-      panY = 0;
-      applyTransform();
-      lightboxImg.classList.add('zoomed');
+      const img = getImg();
+      const nat = getNaturalRect();
+      const targetScale = (window.innerHeight * ZOOM_TARGET_SCALE_VH) / nat.height;
+      // Pivot in viewport coords (where the user tapped):
+      const Px = event.clientX, Py = event.clientY;
+      // Image-pixel currently under (Px, Py): with scale=1, tx=0, ty=0:
+      //   imgPx = Px - nat.left, imgPy = Py - nat.top
+      // We want that same imgPx, imgPy to end up at (Px, Py) at new scale.
+      //   Px = nat.left + newTx + imgPx * targetScale
+      //   newTx = Px - nat.left - (Px - nat.left) * targetScale
+      const newTx = (Px - nat.left) * (1 - targetScale);
+      const newTy = (Py - nat.top) * (1 - targetScale);
+      setZoomState(newTx, newTy, targetScale, true);
     }
 
     function exitZoom() {
-      const lightboxImg = document.getElementById('lightboxImg');
-      zoomScale = 1;
-      zoomOriginX = 50;
-      zoomOriginY = 50;
-      panX = 0;
-      panY = 0;
-      applyTransform();
-      lightboxImg.classList.remove('zoomed');
+      setZoomState(0, 0, 1, true);
     }
 
-    // Wire up double-tap/double-click, single-finger pan, and pinch-to-exit.
+    // Wire up double-tap/double-click, one-finger pan, and two-finger pinch
+    // (pinch zooms proportionally and tracks the current finger midpoint).
     (() => {
-      const lightboxImg = document.getElementById('lightboxImg');
+      const img = getImg();
       let lastTap = 0;
 
-      lightboxImg.addEventListener('click', event => {
+      img.addEventListener('click', event => {
         event.stopPropagation();
         const now = Date.now();
         if (now - lastTap < 350 && lastTap !== 0) {
-          if (lightboxImg.classList.contains('zoomed')) {
-            exitZoom();
-          } else {
-            zoomToPoint(event);
-          }
+          if (img.classList.contains('zoomed')) exitZoom();
+          else zoomToPoint(event);
           lastTap = 0;
         } else {
           lastTap = now;
         }
       });
 
-      // Pan (one finger) and pinch-to-zoom (two fingers) — pinch scales
-      // proportionally to the finger distance, like a standard photo viewer.
       let dragStart = null;
       let pinchStart = null;
 
+      function midpoint(t1, t2) {
+        return { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+      }
       function distance(t1, t2) {
         return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
       }
 
-      lightboxImg.addEventListener('touchstart', e => {
-        if (e.touches.length === 1 && lightboxImg.classList.contains('zoomed')) {
+      img.addEventListener('touchstart', e => {
+        if (e.touches.length === 1 && img.classList.contains('zoomed')) {
           const t = e.touches[0];
-          dragStart = { x: t.clientX, y: t.clientY, panX, panY };
-          lightboxImg.classList.add('dragging');
+          dragStart = { x: t.clientX, y: t.clientY, tx, ty };
+          img.classList.add('dragging');
         } else if (e.touches.length === 2) {
           dragStart = null;
+          const m = midpoint(e.touches[0], e.touches[1]);
+          const nat = getNaturalRect();
+          // Image-pixel currently under the pinch midpoint — stays anchored
+          // to the moving midpoint as the gesture progresses.
+          const pivotImgX = (m.x - nat.left - tx) / s;
+          const pivotImgY = (m.y - nat.top - ty) / s;
           pinchStart = {
             dist: distance(e.touches[0], e.touches[1]),
-            scale: zoomScale
+            scale: s,
+            pivotImgX,
+            pivotImgY,
+            natLeft: nat.left,
+            natTop: nat.top
           };
-          lightboxImg.classList.add('dragging');
+          img.classList.add('dragging');
         }
       }, { passive: true });
 
-      lightboxImg.addEventListener('touchmove', e => {
+      img.addEventListener('touchmove', e => {
         if (e.touches.length === 1 && dragStart) {
           e.preventDefault();
           const t = e.touches[0];
-          panX = dragStart.panX + (t.clientX - dragStart.x);
-          panY = dragStart.panY + (t.clientY - dragStart.y);
-          applyTransform();
+          const proposedTx = dragStart.tx + (t.clientX - dragStart.x);
+          const proposedTy = dragStart.ty + (t.clientY - dragStart.y);
+          setZoomState(proposedTx, proposedTy, s, false);
         } else if (e.touches.length === 2 && pinchStart) {
           e.preventDefault();
+          const m = midpoint(e.touches[0], e.touches[1]);
           const dist = distance(e.touches[0], e.touches[1]);
-          const newScale = pinchStart.scale * (dist / pinchStart.dist);
-          zoomScale = Math.max(1, Math.min(8, newScale));
-          applyTransform();
-          if (zoomScale <= 1) {
-            // Fully pinched back to fit-view — drop zoomed state but keep
-            // touch tracking active so re-pinching out continues smoothly.
-            lightboxImg.classList.remove('zoomed');
-          } else {
-            lightboxImg.classList.add('zoomed');
-          }
+          const proposedScale = pinchStart.scale * (dist / pinchStart.dist);
+          // Keep the same image-pixel under the (possibly-moved) midpoint.
+          const newTx = m.x - pinchStart.natLeft - pinchStart.pivotImgX * proposedScale;
+          const newTy = m.y - pinchStart.natTop - pinchStart.pivotImgY * proposedScale;
+          setZoomState(newTx, newTy, proposedScale, false);
         }
       }, { passive: false });
 
-      lightboxImg.addEventListener('touchend', e => {
+      img.addEventListener('touchend', e => {
         if (e.touches.length === 0) {
           dragStart = null;
           pinchStart = null;
-          lightboxImg.classList.remove('dragging');
+          img.classList.remove('dragging');
+          // Snap-back: if scale ended at 1, ensure tx/ty are exactly centered.
+          if (s <= 1.0001) {
+            const nat = getNaturalRect();
+            const clamped = clampTranslate(0, 0, 1, nat);
+            tx = clamped.tx; ty = clamped.ty; s = 1;
+            applyTransform();
+            img.classList.remove('zoomed');
+          }
         } else if (e.touches.length === 1) {
           pinchStart = null;
         }
       });
 
-      lightboxImg.addEventListener('touchcancel', () => {
+      img.addEventListener('touchcancel', () => {
         dragStart = null;
         pinchStart = null;
-        lightboxImg.classList.remove('dragging');
+        img.classList.remove('dragging');
       });
     })();
 
