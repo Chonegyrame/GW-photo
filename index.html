@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-<!-- deploy-marker-2026-05-03-A -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -360,41 +359,6 @@
       color: var(--gold);
     }
 
-    /* ==== PORTFOLIO SECTION ==== */
-    .portfolio {
-      padding: 120px 56px;
-      background: #161616;
-      scroll-margin-top: 110px;
-    }
-    /* legacy hide class */
-    .portfolio.portfolio-hidden {
-      display: none;
-    }
-    .portfolio[hidden] {
-      display: none !important;
-    }
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 24px;
-      margin-bottom: 64px;
-    }
-    .section-label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 9px;
-      font-weight: 300;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--white);
-    }
-
     .portfolio-jump {
       padding: 72px 0 0;
       background: #161616;
@@ -447,99 +411,6 @@
       line-height: 1;
       text-align: left;
     }
-    /* Editorial 3-column portfolio (manual art-directed rows) */
-    .portfolio-gallery {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .portfolio-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .portfolio-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      align-items: start;
-    }
-    .portfolio-row.row-feature {
-      grid-template-columns: 1.15fr 0.95fr 1fr;
-    }
-    .portfolio-column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .portfolio-card {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      cursor: pointer;
-      border-radius: 2px;
-    }
-    .portfolio-card.size-hero { height: 760px; }
-    .portfolio-card.size-hero-compact { height: 500px; }
-    .portfolio-card.size-tall { height: 560px; }
-    .portfolio-card.size-tall-soft { height: 520px; }
-    .portfolio-card.size-large { height: 480px; }
-    .portfolio-card.size-large-soft { height: 400px; }
-    .portfolio-card.size-medium { height: 300px; }
-    .portfolio-card.size-small { height: 210px; }
-    .portfolio-card.size-solo { height: 620px; }
-
-    .portfolio-card img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      object-position: center center;
-      filter: brightness(0.88) saturate(0.9);
-      transition: transform 0.7s ease, filter 0.5s ease;
-    }
-    .portfolio-card.focus-center img { object-position: center center; }
-    .portfolio-card.focus-top img { object-position: center 22%; }
-    .portfolio-card.focus-left img { object-position: 40% 50%; }
-    .portfolio-card.focus-stjartmesal img { object-position: 40% 50%; }
-    .portfolio-card.focus-right img { object-position: 42% 50%; }
-    .portfolio-card.focus-stjartmes img { object-position: 58% 48%; }
-    .portfolio-card.focus-koltrast img { object-position: 44% 50%; }
-    .portfolio-card.focus-radjur img { object-position: 34% 48%; }
-    .portfolio-card.fit-contain img { object-fit: contain; }
-    .portfolio-card:hover img {
-      transform: scale(1.02);
-      filter: brightness(1) saturate(1.05);
-    }
-
-    .photo-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0);
-      transition: background 0.4s;
-      display: flex;
-      align-items: flex-end;
-      padding: 20px;
-    }
-    .portfolio-card:hover .photo-overlay { background: rgba(0,0,0,0.2); }
-    .photo-species {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      font-style: italic;
-      font-weight: 300;
-      color: var(--white);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: all 0.4s ease;
-    }
-    .portfolio-card:hover .photo-species {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .portfolio-row-single {
-      grid-template-columns: 1fr;
-    }
     .about-strip {
       padding: 100px 56px;
       display: grid;
@@ -586,49 +457,6 @@
       color: rgba(240,236,228,0.25);
     }
 
-    /* ==== LIGHTBOX ==== */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .lightbox.open { display: flex; overflow: hidden; }
-    .lightbox.open.zoomed { display: flex; overflow-y: auto; overflow-x: hidden; align-items: flex-start; justify-content: center; }
-    .lightbox.open.zoomed .lightbox-close { position: fixed; }
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: cover;
-      cursor: zoom-in;
-      transition: transform 0.25s ease;
-    }
-    .lightbox img.zoomed {
-      max-width: 90vw;
-      width: auto;
-      max-height: none;
-      height: 170vh;
-      margin: 6vh auto;
-      display: block;
-      cursor: zoom-out;
-      transform: none;
-    }
-    .lightbox-close {
-      position: absolute;
-      top: 32px; right: 40px;
-      background: none; border: none;
-      color: var(--white);
-      font-size: 28px;
-      cursor: pointer;
-      font-weight: 200;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-    .lightbox-close:hover { opacity: 1; }
-
     /* ==== ANIMATIONS ==== */
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-16px); }
@@ -642,19 +470,6 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    /* -- RESPONSIVE -- */
-    @media (max-width: 1024px) {
-      .portfolio-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .portfolio-row.row-feature {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .portfolio-row-single {
-        grid-template-columns: 1fr;
-      }
-    }
-
     /* ==== HAMBURGER ==== */
     .hamburger {
       display: none;
@@ -706,19 +521,10 @@
       .nav-logo { top: 22px; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
-      .portfolio-card.focus-stjartmesal img { object-position: 62% 50%; }
-      .portfolio-card.focus-koltrast img { object-position: 34% 50%; }
       .portfolio-jump { padding: 40px 0 0; }
       .portfolio-jump-link {
         aspect-ratio: auto;
         height: min(52vh, 450px);
-      }
-      .portfolio { padding: 88px 24px; }
-      .portfolio-row {
-        grid-template-columns: 1fr;
-      }
-      .portfolio-row.row-feature {
-        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -770,15 +576,6 @@
       <span class="portfolio-jump-title">Portfolio</span>
     </a>
   </section>
-<!-- PORTFOLIO -->
-  <section class="portfolio" id="portfolio-gallery" hidden>
-
-    <!-- Replace src URLs with your own bird photos -->
-    <div class="portfolio-gallery">
-      <div class="portfolio-rows" id="portfolioRows"></div>
-    </div>
-  </section>
-
   <!-- ABOUT -->
   <section class="about-strip" id="about">
     <div class="about-text">
@@ -793,25 +590,13 @@
     <span class="footer-copy">&copy; 2026 &middot; All rights reserved</span>
   </footer>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">&times;</button>
-    <img id="lightboxImg" src="" alt="" loading="lazy" decoding="async" onclick="toggleZoom(event)">
-  </div>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Hero is intentionally static.
-    // Home and portfolio state
+  <script>
+    // Smooth-scroll Home links to the hero and clear any leftover hash.
     const homeLink = document.getElementById('homeLink');
     const homeLogoLink = document.getElementById('homeLogoLink');
-    const portfolioSection = document.getElementById('portfolio-gallery');
 
     function resetToHome(event) {
       if (event) event.preventDefault();
-      if (portfolioSection) {
-        portfolioSection.hidden = true;
-      }
-      closeLightbox();
       const heroSection = document.getElementById('home-hero');
       if (heroSection) {
         heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -824,207 +609,9 @@
         }, 400);
       }
     }
-    function openPortfolioFromHash() {
-      if (!portfolioSection) return;
-      if (window.location.hash !== '#portfolio-gallery') return;
-      portfolioSection.hidden = false;
-      requestAnimationFrame(() => {
-        portfolioSection.scrollIntoView({ behavior: 'auto', block: 'start' });
-      });
-    }
 
-    openPortfolioFromHash();
-    window.addEventListener('hashchange', openPortfolioFromHash);
-
-    if (homeLink) {
-      homeLink.addEventListener('click', resetToHome);
-    }
-    if (homeLogoLink) {
-      homeLogoLink.addEventListener('click', resetToHome);
-    }
-// Portfolio image map
-    const portfolioImages = {
-      stjartmesInsekt: { src: './images/long-tailed-tit-with-insect.jpg', alt: 'Long-tailed tit carrying an insect' },
-      ekorre: { src: './images/red-squirrel.jpg', alt: 'Red squirrel on a tree branch' },
-      skaggmes: { src: './images/bearded-reedling.jpg', alt: 'Bearded reedling perched in reeds' },
-      spillkraka: { src: './images/spillkraka.jpg', alt: 'Black woodpecker calling on a mossy log' },
-      notvacka: { src: './images/eurasian-nuthatch.jpg', alt: 'Eurasian nuthatch on tree bark' },
-      tofsmes: { src: './images/crested-tit.jpg', alt: 'Crested tit perched in conifer forest' },
-      blames: { src: './images/eurasian-jay.jpg', alt: 'Eurasian jay perched on a mossy branch' },
-      steglits: { src: './images/european-goldfinch.jpg', alt: 'European goldfinch among winter branches' },
-      tornfalk: { src: './images/common-kestrel.jpg', alt: 'Common kestrel portrait in natural light' },
-      isISol: { src: './images/crow-on-ice.jpg', alt: 'Crow standing on ice in winter' },
-      koltrastISno: { src: './images/common-blackbird-in-snow.jpg', alt: 'Common blackbird in falling snow' },
-      mindreHackspett: { src: './images/lesser-spotted-woodpecker.jpg', alt: 'Lesser spotted woodpecker on tree trunk' },
-      radjur: { src: './images/roe-deer.jpg', alt: 'Roe deer in a forest clearing' },
-      kor: { src: './images/cattle-in-morning-mist.jpg', alt: 'Cattle in morning mist at dawn' },
-      stenknack: { src: './images/hawfinch.jpg', alt: 'Hawfinch close-up portrait' },
-      stjartmesIAl: { src: './images/long-tailed-tit-in-alder.jpg', alt: 'Long-tailed tit in alder branches' },
-      storhack: { src: './images/great-spotted-woodpecker.jpg', alt: 'Great spotted woodpecker close-up' },
-      entita: { src: './images/willow-tit.jpg', alt: 'Willow tit foraging on the forest floor' },
-      svartvitFS: { src: './images/svartvit%20FS.jpg', alt: 'European pied flycatcher portrait' },
-      goktyta: { src: './images/goktyta.jpg', alt: 'Eurasian wryneck on a branch' },
-      duvhok: { src: './images/duvhok.jpg', alt: 'Northern goshawk in flight' }
-    };
-
-    // Manual art-directed rows. Edit sizes/placement here to change composition.
-            const portfolioRows = [
-      {
-        className: 'row-feature',
-        columns: [
-          [
-            { key: 'svartvitFS', size: 'hero-compact', focus: 'left' },
-            { key: 'tofsmes', size: 'large' },
-            { key: 'ekorre', size: 'medium', focus: 'center' },
-            { key: 'stjartmesInsekt', size: 'large', focus: 'stjartmes' },
-            { key: 'radjur', size: 'tall-soft', focus: 'radjur' },
-            { key: 'storhack', size: 'large', focus: 'center' }
-          ],
-          [
-            { key: 'stjartmesIAl', size: 'large-soft', focus: 'stjartmesal' },
-            { key: 'skaggmes', size: 'medium' },
-            { key: 'duvhok', size: 'tall', focus: 'center' },
-            { key: 'notvacka', size: 'medium' },
-            { key: 'kor', size: 'medium' },
-            { key: 'tornfalk', size: 'medium' },
-            { key: 'entita', size: 'small', focus: 'center' }
-          ],
-          [
-            { key: 'spillkraka', size: 'medium' },
-            { key: 'goktyta', size: 'medium', focus: 'center' },
-            { key: 'steglits', size: 'medium' },
-            { key: 'isISol', size: 'small' },
-            { key: 'blames', size: 'medium' },
-            { key: 'koltrastISno', size: 'tall', focus: 'koltrast' },
-            { key: 'mindreHackspett', size: 'medium' },
-            { key: 'stenknack', size: 'tall' }
-          ]
-        ]
-      }
-    ];
-
-    function createPortfolioCard(config) {
-      const image = portfolioImages[config.key];
-      if (!image) return null;
-
-      const card = document.createElement('div');
-      const focusClass = config.focus ? ` focus-${config.focus}` : '';
-      const fitClass = config.fit ? ` fit-${config.fit}` : '';
-      card.className = `portfolio-card size-${config.size}${focusClass}${fitClass}`;
-      card.onclick = () => openLightbox(card);
-
-      const img = document.createElement('img');
-      img.src = image.src;
-      img.alt = image.alt;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      const fileName = image.src.split('/').pop();
-      img.title = `${image.alt} (${fileName})`;
-      img.dataset.filename = fileName;
-
-      const overlay = document.createElement('div');
-      overlay.className = 'photo-overlay';
-      overlay.innerHTML = `<span class="photo-species">${image.alt}</span>`;
-
-      card.appendChild(img);
-      card.appendChild(overlay);
-      return card;
-    }
-
-    function renderPortfolio(rows) {
-      const root = document.getElementById('portfolioRows');
-      if (!root) return;
-      root.innerHTML = '';
-
-      rows.forEach(row => {
-        if (row.single) {
-          const section = document.createElement('div');
-          section.className = 'portfolio-row portfolio-row-single';
-          const card = createPortfolioCard(row.single);
-          if (card) section.appendChild(card);
-          root.appendChild(section);
-          return;
-        }
-
-        const section = document.createElement('div');
-        section.className = `portfolio-row${row.className ? ` ${row.className}` : ''}`;
-
-        row.columns.forEach(columnCards => {
-          const column = document.createElement('div');
-          column.className = 'portfolio-column';
-
-          columnCards.forEach(cardConfig => {
-            const card = createPortfolioCard(cardConfig);
-            if (card) column.appendChild(card);
-          });
-
-          section.appendChild(column);
-        });
-
-        root.appendChild(section);
-      });
-    }
-
-    function getPortfolioRowsForViewport() {
-      const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      if (!isMobile) return portfolioRows;
-
-      return portfolioRows.map(row => {
-        if (!row.columns) return row;
-        return {
-          ...row,
-          columns: row.columns.map(columnCards =>
-            columnCards.map(cardConfig =>
-              cardConfig.key === 'radjur'
-                ? { ...cardConfig, key: 'spillkraka' }
-                : cardConfig.key === 'spillkraka'
-                ? { ...cardConfig, key: 'radjur' }
-                : cardConfig
-            )
-          )
-        };
-      });
-    }
-
-    let lastViewportMode = null;
-    function renderPortfolioForViewport() {
-      const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      if (lastViewportMode === isMobile) return;
-      lastViewportMode = isMobile;
-      renderPortfolio(getPortfolioRowsForViewport());
-    }
-
-    renderPortfolioForViewport();
-    window.addEventListener('resize', renderPortfolioForViewport);
-
-    // Lightbox
-    function openLightbox(item) {
-      const img = item.querySelector('img');
-      const lightboxImg = document.getElementById('lightboxImg');
-      lightboxImg.src = img.src;
-      lightboxImg.classList.remove('zoomed');
-      const lightbox = document.getElementById('lightbox');
-      lightbox.classList.remove('zoomed');
-      lightbox.classList.add('open');
-    }
-    function toggleZoom(event) {
-      event.stopPropagation();
-      const lightboxImg = document.getElementById('lightboxImg');
-      const lightbox = document.getElementById('lightbox');
-      lightboxImg.classList.toggle('zoomed');
-      lightbox.classList.toggle('zoomed');
-    }
-    function closeLightbox() {
-      const lightboxImg = document.getElementById('lightboxImg');
-      const lightbox = document.getElementById('lightbox');
-      lightboxImg.classList.remove('zoomed');
-      lightbox.classList.remove('zoomed');
-      lightbox.classList.remove('open');
-    }
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeLightbox();
-    });
+    if (homeLink) homeLink.addEventListener('click', resetToHome);
+    if (homeLogoLink) homeLogoLink.addEventListener('click', resetToHome);
 
     // Hamburger menu
     const hamburger = document.getElementById('hamburger');

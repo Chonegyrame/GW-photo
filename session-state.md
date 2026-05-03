@@ -1,18 +1,18 @@
 # Session State — GW Photo
 
-## CRITICAL: Two portfolio files exist. Edit the right one.
+## CRITICAL: The portfolio lives in ONE file. Don't add a copy to the homepage.
 
-The site has **two separate portfolio implementations**, each with its own copy of `portfolioImages`, `portfolioRows`, and the `size-*` CSS classes:
+The portfolio gallery is rendered ONLY by **`swedish-wildlife/index.html`**. That's the page visitors land on when they click "Portfolio".
 
 | File | What it is | Visitor-visible? |
 |---|---|---|
-| `index.html` (homepage) | Hero + portfolio jump card. Has a hidden `<section id="portfolio-gallery" hidden>` that only renders when URL hash is `#portfolio-gallery`. | **No, normally invisible.** |
-| `swedish-wildlife/index.html` | The actual portfolio gallery visitors see when they click "Portfolio". URL: `gwallinfoto.com/swedish-wildlife/`. | **Yes — this is THE portfolio.** |
-| `portfolio/index.html` | Older landing page using european-robin as hero. Not actively used in the main flow. | Linked from homepage's portfolio jump, but lightly used. |
+| `index.html` (homepage) | Hero + a single Portfolio jump card (goldeneye photo) that links to the wildlife gallery. **No portfolio code.** | The hero and jump card are visible. Nothing else. |
+| `swedish-wildlife/index.html` | The actual portfolio gallery — `portfolioImages`, `portfolioRows`, all the layout JS, lightbox. URL: `gwallinfoto.com/swedish-wildlife/`. | **Yes — this is THE portfolio.** |
+| `portfolio/index.html` | Older landing page using european-robin as hero. Linked from the homepage's Portfolio jump card. Uses background-image, not the portfolio JS. | Lightly used. |
 
-**Rule of thumb:** When the user says "the portfolio" or "the gallery" or describes layout changes to bird/wildlife images, they almost always mean **`swedish-wildlife/index.html`**.
+**Rule of thumb:** When the user says "the portfolio" or describes layout changes to bird/wildlife images, they mean **`swedish-wildlife/index.html`**. The homepage no longer has portfolio code — don't restore it just because old reflexes say "match across files."
 
-If you make a layout change, mirror it to **both** `index.html` and `swedish-wildlife/index.html` so they don't drift apart, OR confirm with the user which one they want updated. Don't assume the homepage edit alone is sufficient — visitors will not see it.
+History note: the homepage used to have a hidden duplicate portfolio gallery (`<section id="portfolio-gallery" hidden>`), only visible when the URL had `#portfolio-gallery`. We removed it on 2026-05-03 because nobody ever saw it and it caused confusion (we burned ~30 min once thinking edits weren't deploying when they were just on the wrong file). Don't add it back without a clear reason.
 
 ## Today's incident (2026-05-03)
 
@@ -25,9 +25,9 @@ I spent the entire session editing the homepage's hidden portfolio gallery (`ind
 - DNS: Vercel-managed for `gwallinfoto.com` (and `www.` 308-redirects to apex)
 - The repo contains a leftover `<script src="/cdn-cgi/...">` line from a prior Cloudflare setup. It 404s on Vercel but does no harm. Safe to remove if cleanup is desired.
 
-## Grid layout reference (applies to both index.html and swedish-wildlife/index.html)
+## Grid layout reference (in `swedish-wildlife/index.html` only)
 
-The portfolio is rendered by inline JS at the bottom of each file. To change a card, edit `portfolioImages` (image source map) and `portfolioRows` (placement).
+The portfolio is rendered by inline JS at the bottom of `swedish-wildlife/index.html`. To change a card, edit `portfolioImages` (image source map) and `portfolioRows` (placement).
 
 ### `portfolioImages` — image source map
 ```js
@@ -36,8 +36,7 @@ The portfolio is rendered by inline JS at the bottom of each file. To change a c
   ...
 }
 ```
-- In `index.html` paths use `./images/...`
-- In `swedish-wildlife/index.html` paths use `../images/...`
+- Paths are relative to `swedish-wildlife/`, so use `../images/...`
 - Spaces in filenames must be URL-encoded as `%20`. Example: `'../images/svartvit%20FS.jpg'`.
 - New keys are camelCase Swedish-ish (`stjartmesInsekt`, `spillkraka`, `goktyta`).
 
@@ -64,7 +63,7 @@ A single `row-feature` row with three columns. Each column is an array of card c
 | `medium` | 300 | Default "small" card |
 | `small` | 210 | Compact filler |
 
-To add a new size, add a CSS rule `.portfolio-card.size-<name> { height: Xpx; }` and reference it in `portfolioRows`. Add to **both** files if visual parity matters.
+To add a new size, add a CSS rule `.portfolio-card.size-<name> { height: Xpx; }` and reference it in `portfolioRows`. Also add a corresponding height in the `@media (max-width: 768px)` block (~25% smaller for mobile).
 
 ### Focus classes
 | Focus | object-position | Use for |
@@ -81,29 +80,39 @@ To add a new size, add a CSS rule `.portfolio-card.size-<name> { height: Xpx; }`
 Custom focus class for a single image: add a CSS rule `.portfolio-card.focus-<name> img { object-position: X% Y%; }`.
 
 ### Mobile behavior
-Around line ~970 (homepage) / ~460 (wildlife) there's `getPortfolioRowsForViewport` that swaps `radjur` ↔ `spillkraka` on mobile (≤768px) so the heavy roe-deer card doesn't sit at the top of the right column on phones. If you reorder, verify that swap still makes sense.
+On `swedish-wildlife/index.html`, `getPortfolioRowsForViewport` does two things on mobile (≤768px):
+1. Swaps `radjur` ↔ `spillkraka` so the roe-deer card doesn't sit at the top of the right column. (Originally tuned for column-stacked mobile — re-evaluate if the interleave order makes you want different positions.)
+2. **Interleaves columns left-to-right** — instead of stacking col1, then col2, then col3 in full, it takes col1[0], col2[0], col3[0], col1[1], col2[1], col3[1], … so a phone visitor experiences the rows in reading order rather than three big chunks.
 
-## Today's layout changes (applied to both files as of 2026-05-03)
+Card heights in the mobile `@media` block are roughly 75% of their desktop values.
+
+A simple **mobile-only Home link** (`.mobile-home-link`) is in the nav so visitors can return to the homepage without using the GW logo.
+
+## Today's layout (applied to swedish-wildlife/index.html as of 2026-05-03)
 
 - New image: `images/spillkraka.jpg` (replaces old `black-woodpecker.jpg` for the spillkraka entry)
-- New images tracked: `spillkraka.jpg`, `svartvit FS.jpg`, `duvhok.jpg`, `goktyta.jpg`
-- Layout:
+- Newly tracked images: `spillkraka.jpg`, `svartvit FS.jpg`, `duvhok.jpg`, `goktyta.jpg`
+- Layout (desktop, three columns):
   - **Col 1:** svartvitFS (hero-compact 500, focus left) → tofsmes (large) → ekorre (medium) → stjartmesInsekt (large) → radjur (tall-soft) → storhack (large)
-  - **Col 2:** stjartmesIAl (large-soft 400) → skaggmes (medium) → duvhok (tall) → notvacka (medium) → kor (medium) → tornfalk (medium) → entita (small) → gardsmyg (medium, wildlife page only)
+  - **Col 2:** stjartmesIAl (large-soft 400) → skaggmes (medium) → duvhok (tall) → notvacka (medium) → kor (medium) → tornfalk (medium) → entita (small) → gardsmyg (medium)
   - **Col 3:** spillkraka (medium) → goktyta (medium) → steglits (medium) → isISol (small) → blames (medium) → koltrastISno (tall) → mindreHackspett (medium) → stenknack (tall)
-- Size class added: `size-hero-compact` changed from 540 → 500. New `size-large-soft` at 400px.
+- Size classes: `size-hero-compact` set to 500, new `size-large-soft` at 400.
+- Mobile (≤768px): all heights reduced ~25%, columns interleave row-by-row, sticky Home link added top-left.
+
+## Cleanup (2026-05-03)
+
+The homepage's hidden `<section id="portfolio-gallery">` and all related code (CSS for `.portfolio-card`, `.portfolio-row`, `.portfolio-rows`, `.portfolio-gallery`, `.portfolio-column`, `.photo-overlay`, `.photo-species`, `.lightbox*`, `.section-header/label/title`; the `portfolioImages`/`portfolioRows`/`renderPortfolio`/`createPortfolioCard`/`getPortfolioRowsForViewport`/`openLightbox`/`closeLightbox`/`toggleZoom`/`openPortfolioFromHash` JS; and the lightbox `<div>`) were removed from `index.html`. The deploy-marker comment and the leftover Cloudflare `cdn-cgi/scripts/email-decode.min.js` script tag were also removed (no longer needed on Vercel). The wildlife page is unaffected.
 
 ## Verification workflow
 
 There's a preview server at port 8080 configured in `.claude/launch.json`. Use:
 - `preview_start` with name `gw-photo` to start it
-- `preview_eval` with `window.location.href = '/swedish-wildlife/index.html'` to navigate
+- `preview_eval` with `window.location.href = '/swedish-wildlife/index.html'` to preview the portfolio
 - `preview_eval` with DOM queries to inspect card layout
+- `preview_resize` with preset `'mobile'` to test the 768px breakpoint
 - `preview_screenshot` for visual checks
 
-The homepage's hidden portfolio only renders when navigating to `/#portfolio-gallery`. Don't waste time previewing that — preview the wildlife page directly.
-
 ## Don't
-- Don't edit only `index.html` for portfolio changes. Visitors don't see that.
-- Don't change the `size-*` CSS class heights without checking which files reference them — both files have independent copies.
-- Don't auto-delete the leftover `cdn-cgi` script tag without asking — it's harmless on Vercel but the user may want to keep it in case they revert hosting.
+- Don't add portfolio code back to `index.html`. Edit only `swedish-wildlife/index.html` for portfolio changes.
+- When adding a new card size, update both the desktop CSS rule and the mobile `@media (max-width: 768px)` block (~25% smaller).
+- Don't reintroduce the lightbox on the homepage; it's only used by the wildlife portfolio page.
