@@ -546,9 +546,9 @@
     let unzoomedRect = null;
     const MIN_SCALE = 1;
     const MAX_SCALE = 8;
-    const ELASTIC_DAMPING = 0.3;     // how slowly scale grows past the limits
-    const HARD_MAX = MAX_SCALE * 1.25; // absolute ceiling during pinch (10x)
-    const HARD_MIN = MIN_SCALE * 0.85; // absolute floor during pinch (0.85x)
+    const ELASTIC_DAMPING = 0.2;       // how slowly scale grows past the limits
+    const HARD_MAX = MAX_SCALE * 1.16; // absolute ceiling during pinch (~9.3x)
+    const HARD_MIN = MIN_SCALE * 0.90; // absolute floor during pinch (0.9x)
     const ZOOM_TARGET_SCALE_VH = 1.3; // double-tap zoom target = 130vh tall
 
     function applyElastic(rawScale) {
@@ -648,23 +648,42 @@
     }
 
     function snapBackToBounds() {
-      // Called on touchend. If scale ended outside [MIN, MAX] during elastic
-      // overshoot, snap-animate back to the nearest legal scale while anchoring
-      // the viewport center to the same image-pixel (so the user doesn't see
-      // the image visibly shift on release).
+      // Called on touchend. If scale is within bounds just clamp position.
       if (s >= MIN_SCALE - 0.0001 && s <= MAX_SCALE + 0.0001) {
         setZoomState(tx, ty, s, true);
         return;
       }
+      // JS-driven animation instead of CSS transition: recomputes and clamps
+      // tx/ty at every frame so the image never drifts off-screen mid-animation,
+      // which is what caused the black flash with the CSS transition approach.
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
       const nat = getNaturalRect();
       const imgX = (cx - nat.left - tx) / s;
       const imgY = (cy - nat.top - ty) / s;
-      const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
-      const newTx = cx - nat.left - imgX * newScale;
-      const newTy = cy - nat.top - imgY * newScale;
-      setZoomState(newTx, newTy, newScale, true);
+      const startScale = s;
+      const targetScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
+      const duration = 280;
+      const startTime = performance.now();
+      const img = getImg();
+      img.classList.add('dragging');
+      function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+      function step(now) {
+        const t = Math.min(1, (now - startTime) / duration);
+        const eased = easeOutCubic(t);
+        s = startScale + (targetScale - startScale) * eased;
+        const rawTx = cx - nat.left - imgX * s;
+        const rawTy = cy - nat.top - imgY * s;
+        const clamped = clampTranslate(rawTx, rawTy, s, nat);
+        tx = clamped.tx;
+        ty = clamped.ty;
+        applyTransform();
+        if (t < 1) { requestAnimationFrame(step); return; }
+        img.classList.remove('dragging');
+        if (s > 1.0001) img.classList.add('zoomed');
+        else img.classList.remove('zoomed');
+      }
+      requestAnimationFrame(step);
     }
 
     function zoomToPoint(event) {
