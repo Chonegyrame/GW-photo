@@ -679,7 +679,11 @@
         ty = clamped.ty;
         applyTransform();
         if (t < 1) { requestAnimationFrame(step); return; }
-        img.classList.remove('dragging');
+        // Leave dragging on — removing it immediately re-enables the CSS
+        // transition, which causes the GPU compositor to flash from its
+        // cached elastic-scale frame to the settled position. The class is
+        // cleared by setZoomState(animate=true) on the next intentional
+        // interaction (double-tap, new image, close).
         if (s > 1.0001) img.classList.add('zoomed');
         else img.classList.remove('zoomed');
       }
