@@ -267,6 +267,9 @@
       user-select: none;
       -webkit-user-drag: none;
       touch-action: none;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     .lightbox img.zoomed { cursor: grab; }
@@ -546,9 +549,9 @@
     let unzoomedRect = null;
     const MIN_SCALE = 1;
     const MAX_SCALE = 8;
-    const ELASTIC_DAMPING = 0.3;     // how slowly scale grows past the limits
-    const HARD_MAX = MAX_SCALE * 1.25; // absolute ceiling during pinch (10x)
-    const HARD_MIN = MIN_SCALE * 0.85; // absolute floor during pinch (0.85x)
+    const ELASTIC_DAMPING = 0.15;      // how slowly scale grows past the limits
+    const HARD_MAX = MAX_SCALE * 1.125; // absolute ceiling during pinch (9x)
+    const HARD_MIN = MIN_SCALE * 0.925; // absolute floor during pinch (0.925x)
     const ZOOM_TARGET_SCALE_VH = 1.3; // double-tap zoom target = 130vh tall
 
     function applyElastic(rawScale) {
@@ -664,7 +667,10 @@
       const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
       const newTx = cx - nat.left - imgX * newScale;
       const newTy = cy - nat.top - imgY * newScale;
-      setZoomState(newTx, newTy, newScale, true);
+      // rAF gives the browser one frame to paint the elastic position before
+      // we re-enable the CSS transition, preventing the black-flash that occurs
+      // when the compositor hasn't committed the current frame yet.
+      requestAnimationFrame(() => setZoomState(newTx, newTy, newScale, true));
     }
 
     function zoomToPoint(event) {
